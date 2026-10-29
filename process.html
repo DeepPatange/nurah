@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>nūrah · Process board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans+Arabic:wght@400&family=Caveat:wght@500;600&display=swap">
+<style>
+:root { --ink: #141414; --muted: #6B6B6B; --line: #E6E6E6; --soft: #F5F5F5; --bronze: #AD783B; --red: #B4532A; --canvas: #EFEFEC; --bar: 56px; color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--canvas); color: var(--ink); font-family: "Inter Tight", "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; overflow: hidden; }
+
+/* top bar */
+.top { position: fixed; inset: 0 0 auto 0; height: var(--bar); z-index: 20; background: rgba(255,255,255,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 16px; padding: 0 16px; }
+.wm { font-weight: 400; letter-spacing: -.045em; font-size: 24px; text-decoration: none; color: var(--ink); white-space: nowrap; }
+.wm .u { position: relative; display: inline-block; }
+.wm .u::before { content: ""; position: absolute; left: 15%; right: 15%; top: .17em; height: .07em; background: var(--bronze); }
+.top .title { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; }
+.chips::-webkit-scrollbar { display: none; }
+.chips button { border: 1px solid var(--line); background: #fff; border-radius: 100px; padding: 6px 12px; font: inherit; font-size: 12.5px; white-space: nowrap; cursor: pointer; }
+.chips button:hover { border-color: var(--ink); }
+.zoom { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.zoom button, .zoom a { border: 1px solid var(--line); background: #fff; border-radius: 100px; height: 32px; min-width: 32px; padding: 0 10px; font: inherit; font-size: 13px; cursor: pointer; text-decoration: none; color: var(--ink); display: inline-grid; place-items: center; }
+.zoom span { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--muted); width: 44px; text-align: center; }
+.zoom a.dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* canvas */
+.viewport { position: fixed; inset: var(--bar) 0 0 0; overflow: auto; cursor: grab; background-color: var(--canvas); background-image: radial-gradient(#D4D4CF 1px, transparent 1px); background-size: 22px 22px; }
+.viewport.drag { cursor: grabbing; }
+.sizer { position: relative; }
+.board { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.section { position: absolute; border: 1px solid #DCDCD7; border-radius: 22px; background: rgba(255,255,255,.42); }
+.section h2 { position: absolute; left: 36px; top: 26px; margin: 0; font-weight: 400; font-size: 56px; letter-spacing: -.04em; line-height: 1; display: flex; align-items: baseline; gap: 16px; }
+.section h2 small { font-family: "IBM Plex Mono", monospace; font-size: 15px; letter-spacing: .08em; color: var(--muted); }
+.section h2 em { font-style: normal; font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--bronze); letter-spacing: .06em; }
+
+.it { position: absolute; margin: 0; }
+.pic { background: #fff; padding: 8px 8px 10px; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 10px 26px rgba(0,0,0,.07); cursor: zoom-in; transition: box-shadow .2s ease; }
+.pic:hover { box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 18px 40px rgba(0,0,0,.14); z-index: 5; }
+.pic .ph { background: var(--soft); overflow: hidden; }
+.pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pic figcaption { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; line-height: 1.45; color: var(--muted); margin-top: 8px; letter-spacing: .02em; }
+.pic.dropped .ph img { filter: grayscale(.35); opacity: .78; }
+.tag { display: inline-block; font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; border: 1px solid #CFCFCF; color: var(--ink); padding: 1px 6px; border-radius: 3px; margin-right: 6px; background: #fff; }
+.tag.bad { border-color: var(--red); color: var(--red); }
+.tag.good { background: var(--bronze); border-color: var(--bronze); color: #fff; }
+.tag.ref { border-color: var(--ink); }
+.stamp { position: absolute; right: 14px; top: 18px; font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: .12em; color: var(--red); border: 2px solid var(--red); padding: 3px 8px; transform: rotate(8deg); background: rgba(255,255,255,.85); pointer-events: none; }
+.tape { position: absolute; top: -12px; left: 50%; width: 92px; height: 24px; margin-left: -46px; background: rgba(255,255,255,.55); border: 1px solid rgba(0,0,0,.06); box-shadow: 0 1px 2px rgba(0,0,0,.06); pointer-events: none; }
+
+.note { background: #FFF2A8; padding: 18px 18px 20px; box-shadow: 0 1px 2px rgba(0,0,0,.1), 0 10px 22px rgba(0,0,0,.08); font-family: "Caveat", cursive; font-size: 25px; line-height: 1.15; color: #2B2B2B; }
+.note.alt { background: #DDEBFF; }
+.type { background: #fff; padding: 22px 22px 18px; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 10px 26px rgba(0,0,0,.06); }
+.type .sample { font-size: 46px; letter-spacing: -.035em; line-height: 1.02; }
+.type .nm { font-weight: 500; margin-top: 14px; font-size: 15px; }
+.type .sb { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+.scale .srow { display: grid; gap: 2px; padding: 8px 0; border-top: 1px solid var(--line); }
+.scale .srow span { font-family: "IBM Plex Mono", monospace; font-size: 10px; color: var(--muted); }
+.scale .srow div { letter-spacing: -.02em; line-height: 1.1; }
+.swatch { background: #fff; padding: 8px 8px 12px; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 10px 26px rgba(0,0,0,.06); }
+.swatch .chip { aspect-ratio: 1 / 1; border: 1px solid rgba(0,0,0,.08); position: relative; overflow: hidden; }
+.swatch.struck .chip::after { content: ""; position: absolute; left: -10%; right: -10%; top: 50%; height: 3px; background: var(--red); transform: rotate(-45deg); }
+.swatch b { display: block; font-weight: 500; font-size: 14px; margin-top: 8px; }
+.swatch span { display: block; font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--muted); line-height: 1.45; }
+.copy { background: #fff; padding: 18px; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 10px 26px rgba(0,0,0,.06); font-size: 15px; line-height: 1.35; }
+.copy .b { color: #9A9A9A; text-decoration: line-through; text-decoration-color: var(--red); }
+.copy .a { margin-top: 10px; }
+.copy small { display: block; font-family: "IBM Plex Mono", monospace; font-size: 9.5px; letter-spacing: .08em; color: var(--muted); margin-bottom: 4px; }
+.mark { background: #fff; padding: 46px 20px 18px; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 10px 26px rgba(0,0,0,.06); text-align: center; }
+.mark .wm { font-size: 112px; display: inline-block; }
+.mark p { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--muted); margin: 26px 0 0; text-align: left; }
+
+/* lightbox */
+.lb { position: fixed; inset: 0; z-index: 40; background: rgba(20,20,20,.86); display: none; align-items: center; justify-content: center; padding: 32px; }
+.lb.open { display: flex; }
+.lb figure { margin: 0; max-width: min(1200px, 100%); max-height: 100%; display: grid; gap: 12px; }
+.lb img { max-width: 100%; max-height: calc(100vh - 140px); object-fit: contain; background: #fff; }
+.lb figcaption { color: #fff; font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: .04em; }
+.lb button { position: absolute; top: 16px; right: 16px; border: 0; border-radius: 100px; background: #fff; height: 36px; padding: 0 16px; font: inherit; cursor: pointer; }
+.hint { position: fixed; left: 16px; bottom: 16px; z-index: 15; background: rgba(255,255,255,.92); border: 1px solid var(--line); border-radius: 100px; padding: 7px 14px; font-size: 12px; color: var(--muted); }
+@media (max-width: 760px) { .top .title, .hint { display: none; } .zoom span { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <a class="wm" href="index.html" aria-label="Back to the prototype">n<span class="u">u</span>rah</a>
+  <span class="title">Process board · 28 Oct 2026</span>
+  <div class="chips" id="chips" aria-label="Jump to section"></div>
+  <div class="zoom">
+    <button type="button" id="zOut" aria-label="Zoom out">−</button><span id="zVal">100%</span><button type="button" id="zIn" aria-label="Zoom in">+</button>
+    <button type="button" id="zFit">Fit</button>
+    <a class="dark" href="index.html">Prototype</a>
+  </div>
+</div>
+
+<div class="viewport" id="vp"><div class="sizer" id="sizer"><div class="board" id="board"></div></div></div>
+<div class="hint">Drag to move · Ctrl or ⌘ + scroll to zoom · Click any image to enlarge</div>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged image"><button type="button" id="lbClose">Close</button><figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure></div>
+
+<script src="process/data.js"></script>
+<script>
+(function () {
+  "use strict";
+  var D = window.PROCESS, board = document.getElementById("board"), sizer = document.getElementById("sizer"), vp = document.getElementById("vp");
+  var CW = 160, G = 20, PAD = 44, HEAD = 120, ZGAP = 120;
+  // section rows: [zone index, columns]
+  var ROWS = [[[0, 6], [1, 12], [2, 7], [3, 6]], [[4, 13], [5, 12], [6, 7]], [[7, 9], [8, 6], [9, 12]], [[10, 13], [11, 14]]];
+  function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  var rand = rng(28102026);
+  function esc(s) { var d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
+  function tagClass(t) {
+    if (/rejected|dropped/i.test(t)) return "bad";
+    if (/final|current/i.test(t)) return "good";
+    if (/ref|brief|stock/i.test(t)) return "ref";
+    return "";
+  }
+  function el(it) {
+    var w = it.s * CW + (it.s - 1) * G, node = document.createElement("figure"), html = "";
+    node.style.width = w + "px";
+    if (it.t === "img") {
+      node.className = "it pic" + (/rejected|dropped/i.test(it.tag) ? " dropped" : "");
+      html = '<div class="ph" style="aspect-ratio:' + it.w + " / " + it.h + '"><img src="' + it.src + '" alt="' + esc(it.cap) + '" loading="lazy" draggable="false"></div>' +
+        "<figcaption>" + (it.tag ? '<span class="tag ' + tagClass(it.tag) + '">' + esc(it.tag) + "</span>" : "") + esc(it.cap) + "</figcaption>";
+      if (/rejected|dropped/i.test(it.tag)) html += '<span class="stamp">' + esc(it.tag.toUpperCase()) + "</span>";
+      if (rand() < 0.34) html += '<span class="tape" style="transform:rotate(' + ((rand() - 0.5) * 14).toFixed(1) + 'deg)"></span>';
+      node.dataset.src = it.src; node.dataset.cap = (it.tag ? it.tag + " · " : "") + it.cap;
+    } else if (it.t === "note") {
+      node.className = "it note" + (rand() < 0.3 ? " alt" : ""); html = esc(it.text);
+    } else if (it.t === "type") {
+      node.className = "it type";
+      html = '<div class="sample" style="font-family:' + it.family + (it.size ? ';font-size:' + it.size + 'px' : '') + (it.rtl ? ';direction:rtl;text-align:right' : "") + '">' + esc(it.sample) + '</div><div class="nm">' + esc(it.name) + '</div><div class="sb">' + esc(it.sub) + "</div>";
+    } else if (it.t === "swatch") {
+      node.className = "it swatch" + (it.struck ? " struck" : "");
+      html = '<div class="chip" style="background:' + it.hex + '"></div><b>' + esc(it.name) + "</b><span>" + esc(it.hex) + "</span><span>" + esc(it.use) + "</span>";
+    } else if (it.t === "copy") {
+      node.className = "it copy"; html = '<small>BEFORE</small><div class="b">' + esc(it.before) + '</div><div class="a"><small>AFTER</small>' + esc(it.after) + "</div>";
+    } else if (it.t === "scale") {
+      node.className = "it type scale";
+      html = '<div class="sb" style="margin:0 0 10px">TYPE SCALE · DESKTOP</div>' + it.rows.map(function (r) { return '<div class="srow"><span>' + esc(r[0]) + ' · ' + r[1] + '</span><div style="font-size:' + Math.min(r[1], 40) + 'px;' + (r[1] <= 11 ? 'font-family:IBM Plex Mono;letter-spacing:.08em' : '') + '">' + esc(r[2]) + '</div></div>'; }).join('');
+    } else if (it.t === "mark") {
+      node.className = "it mark"; html = '<span class="wm">n<span class="u">u</span>rah</span><p>' + esc(it.cap) + "</p>";
+    }
+    node.innerHTML = html;
+    return node;
+  }
+
+  // build sections, then masonry-pack each one with a little scatter (after fonts load, so text heights are final)
+  function build() {
+  var byZone = {}; D.items.forEach(function (it) { (byZone[it.z] = byZone[it.z] || []).push(it); });
+  var sections = [], y = 0, boardW = 0;
+  ROWS.forEach(function (row) {
+    var x = 0, rowH = 0, placed = [];
+    row.forEach(function (pair) {
+      var z = pair[0], cols = pair[1], innerW = cols * CW + (cols - 1) * G, sec = document.createElement("section");
+      sec.className = "section"; sec.id = "z" + z;
+      sec.innerHTML = "<h2><small>" + String(z + 1).padStart(2, "0") + "</small>" + esc(D.zones[z]) + "<em>" + (byZone[z] || []).length + " items</em></h2>";
+      board.appendChild(sec);
+      var colH = []; for (var c = 0; c < cols; c++) colH.push(0);
+      (byZone[z] || []).forEach(function (it) {
+        var s = Math.min(it.s, cols), node = el(it); board.appendChild(node);
+        var best = 0, bestH = 1e9;
+        for (var c2 = 0; c2 <= cols - s; c2++) { var h = Math.max.apply(null, colH.slice(c2, c2 + s)); if (h < bestH - 2) { bestH = h; best = c2; } }
+        var hgt = node.offsetHeight, jx = (rand() - 0.5) * 22, jy = rand() * 16 - 4, rot = (rand() - 0.5) * (it.t === "note" ? 6 : 4.2);
+        node.style.left = (x + PAD + best * (CW + G) + jx) + "px";
+        node.style.top = (y + HEAD + bestH + jy) + "px";
+        node.style.transform = "rotate(" + rot.toFixed(2) + "deg)";
+        for (var c3 = best; c3 < best + s; c3++) colH[c3] = bestH + hgt + G + 14;
+      });
+      var secH = HEAD + Math.max.apply(null, colH) + PAD;
+      placed.push({ sec: sec, x: x, w: innerW + PAD * 2, h: secH });
+      rowH = Math.max(rowH, secH); x += innerW + PAD * 2 + ZGAP;
+    });
+    placed.forEach(function (p) { p.sec.style.left = p.x + "px"; p.sec.style.top = y + "px"; p.sec.style.width = p.w + "px"; p.sec.style.height = p.h + "px"; sections.push(p); p.y = y; });
+    boardW = Math.max(boardW, x - ZGAP); y += rowH + ZGAP;
+  });
+  var W = boardW + 160, H = y + 40;
+  board.style.width = W + "px"; board.style.height = H + "px"; board.style.left = "80px"; board.style.top = "60px";
+
+  // zoom and pan
+  var scale = 1, zVal = document.getElementById("zVal");
+  function apply() {
+    board.style.transform = "scale(" + scale + ")";
+    sizer.style.width = (W * scale + 160) + "px"; sizer.style.height = (H * scale + 120) + "px";
+    board.style.left = "80px"; board.style.top = "60px";
+    zVal.textContent = Math.round(scale * 100) + "%";
+  }
+  function zoomTo(s, cx, cy) {
+    s = Math.max(0.08, Math.min(2, s));
+    var r = vp.getBoundingClientRect(); if (cx == null) { cx = r.width / 2; cy = r.height / 2; }
+    var bx = (vp.scrollLeft + cx - 80) / scale, by = (vp.scrollTop + cy - 60) / scale;
+    scale = s; apply();
+    vp.scrollLeft = bx * scale + 80 - cx; vp.scrollTop = by * scale + 60 - cy;
+  }
+  function fitRect(x, yy, w, h) {
+    var r = vp.getBoundingClientRect();
+    scale = Math.max(0.08, Math.min(1.2, Math.min((r.width - 60) / w, (r.height - 60) / h))); apply();
+    vp.scrollLeft = x * scale + 80 - (r.width - w * scale) / 2; vp.scrollTop = yy * scale + 60 - (r.height - h * scale) / 2;
+  }
+  function fitAll() { var r = vp.getBoundingClientRect(); scale = Math.max(0.08, (r.width - 80) / W); apply(); vp.scrollLeft = 0; vp.scrollTop = 0; }
+  document.getElementById("zIn").onclick = function () { zoomTo(scale * 1.25); };
+  document.getElementById("zOut").onclick = function () { zoomTo(scale / 1.25); };
+  document.getElementById("zFit").onclick = fitAll;
+  vp.addEventListener("wheel", function (e) {
+    if (!(e.ctrlKey || e.metaKey)) return;
+    e.preventDefault(); var r = vp.getBoundingClientRect();
+    zoomTo(scale * Math.exp(-e.deltaY * 0.0022), e.clientX - r.left, e.clientY - r.top);
+  }, { passive: false });
+  document.addEventListener("keydown", function (e) {
+    if (e.target.tagName === "INPUT") return;
+    if (e.key === "+" || e.key === "=") zoomTo(scale * 1.25);
+    else if (e.key === "-") zoomTo(scale / 1.25);
+    else if (e.key === "0") fitAll();
+    else if (e.key === "Escape") closeLb();
+  });
+  var drag = null, moved = false;
+  vp.addEventListener("pointerdown", function (e) {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    drag = { x: e.clientX, y: e.clientY, sl: vp.scrollLeft, st: vp.scrollTop }; moved = false;
+  });
+  window.addEventListener("pointermove", function (e) {
+    if (!drag) return;
+    var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!moved && Math.abs(dx) + Math.abs(dy) > 5) { moved = true; vp.classList.add("drag"); }
+    if (moved) { vp.scrollLeft = drag.sl - dx; vp.scrollTop = drag.st - dy; }
+  });
+  window.addEventListener("pointerup", function () { drag = null; vp.classList.remove("drag"); setTimeout(function () { moved = false; }, 0); });
+
+  // section chips
+  var chips = document.getElementById("chips");
+  sections.slice().sort(function (a, b) { return Number(a.sec.id.slice(1)) - Number(b.sec.id.slice(1)); }).forEach(function (p) {
+    var b = document.createElement("button"); b.type = "button"; b.textContent = D.zones[Number(p.sec.id.slice(1))];
+    b.onclick = function () { fitRect(p.x, p.y, p.w, p.h); }; chips.appendChild(b);
+  });
+
+  // lightbox
+  var lb = document.getElementById("lb");
+  function closeLb() { lb.classList.remove("open"); }
+  board.addEventListener("click", function (e) {
+    if (moved) return;
+    var f = e.target.closest(".pic"); if (!f) return;
+    document.getElementById("lbImg").src = f.dataset.src; document.getElementById("lbCap").textContent = f.dataset.cap; lb.classList.add("open");
+  });
+  lb.addEventListener("click", function (e) { if (e.target === lb || e.target.id === "lbClose") closeLb(); });
+
+  apply(); fitAll();
+  window.addEventListener("resize", function () { if (scale < 0.3) fitAll(); });
+  }
+  var fontsReady = document.fonts ? Promise.all(["25px Caveat", "46px 'Inter Tight'", "15px 'Inter Tight'", "11px 'IBM Plex Mono'", "40px 'IBM Plex Sans Arabic'"].map(function (f) { return document.fonts.load(f); })) : Promise.resolve();
+  Promise.race([fontsReady, new Promise(function (r) { setTimeout(r, 2500); })]).then(build, build);
+})();
+</script>
+</body>
+</html>

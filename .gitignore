@@ -1,0 +1,11 @@
+# Code only. Images, video, the painting sources and the process board data stay local:
+# the stock photography is not yet licensed and the reference material belongs to the client.
+*
+!*/
+!*.html
+!*.css
+!*.js
+!README.md
+!.gitignore
+paint/sources.js
+process/data.js

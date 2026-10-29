@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shop · nūrah (prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans+Arabic:wght@400&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+.pageHead { padding-block: 28px 8px; display: grid; gap: 14px; }
+.crumb { font-size: 12px; color: var(--muted); }
+.crumb a { text-decoration: none; }
+.pageHead .intro { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+.pageHead p { color: var(--muted); max-width: 60ch; }
+.jump { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.jump a { text-decoration: none; font-size: 13px; border: 1px solid var(--line); border-radius: 100px; padding: 7px 14px; }
+.jump a:hover { border-color: var(--ink); }
+.toolbar { position: relative; z-index: 10; background: rgba(255,255,255,.97); border-block: 1px solid var(--line); margin-top: 28px; }
+.toolbar .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 58px; flex-wrap: wrap; padding-block: 8px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: #fff; padding: 7px 14px; border-radius: 100px; font-size: 13px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.toolbar select { border: 1px solid var(--line); border-radius: 100px; padding: 8px 14px; background: #fff; font-size: 13px; }
+.toolbar .count { font-size: 13px; color: var(--muted); }
+.sub { padding-block: 44px 8px; }
+.sub + .sub { border-top: 1px solid var(--line); margin-top: 48px; }
+.helpCard { background: var(--soft); padding: 28px; display: grid; gap: 14px; align-content: end; aspect-ratio: auto; }
+.kits { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.kitCard { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: var(--soft); text-decoration: none; position: relative; }
+.kitCard .img { aspect-ratio: 4 / 5; background: #fff; overflow: hidden; border-right: 1px solid #EEEEEE; }
+.kitCard .img img { width: 100%; height: 100%; object-fit: cover; }
+.kitCard .body { padding: 28px; display: grid; gap: 10px; align-content: space-between; }
+.kitCard a.cover::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.kitCard button { position: relative; z-index: 2; }
+.groupBand { margin-top: 40px; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; border: 1px solid var(--line); padding: 24px 28px; }
+.groupBand h3 { font-size: 22px; font-weight: 400; letter-spacing: -.02em; margin: 6px 0 6px; }
+.groupBand p { color: var(--muted); max-width: 70ch; font-size: 14px; }
+.ruleNote { margin-top: 20px; font-size: 13.5px; color: var(--muted); border-left: 2px solid var(--bronze); padding: 4px 0 4px 14px; max-width: 90ch; }
+.rules { margin-top: 32px; display: grid; grid-template-columns: 180px repeat(2, minmax(0, 1fr)); gap: 16px 28px; border-top: 1px solid var(--line); padding-top: 20px; }
+.rules b { font-weight: 500; }
+.rules p { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+@media (max-width: 960px) { .rules { grid-template-columns: minmax(0, 1fr); } }
+.kitCard ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; display: grid; gap: 4px; }
+.kitCard .price { font-size: 22px; letter-spacing: -.02em; }
+.kitCard .save { color: var(--bronze); font-size: 13px; }
+.tableWrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; }
+th, td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { font-weight: 500; background: #FAFAFA; }
+tbody th { font-weight: 500; width: 180px; }
+tr:last-child th, tr:last-child td { border-bottom: 0; }
+.soon { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.soon div { display: grid; gap: 10px; }
+.womenBand { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); background: var(--soft); }
+.womenBand .img { position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
+.womenBand .img img { width: 100%; height: 100%; object-fit: cover; }
+.womenBand .body { padding: clamp(28px, 4vw, 56px); display: grid; gap: 16px; align-content: center; }
+.womenBand .body p { color: var(--muted); max-width: 52ch; }
+.notify { display: flex; gap: 10px; flex-wrap: wrap; }
+.notify input { flex: 1; min-width: 200px; height: 50px; border: 1px solid var(--line); border-radius: 100px; padding: 0 20px; background: #fff; }
+@media (max-width: 960px) { .womenBand { grid-template-columns: minmax(0, 1fr); } }
+.soon span { color: var(--muted); font-size: 13.5px; }
+.pcard[hidden] { display: none; }
+@media (max-width: 960px) {
+  .kits { grid-template-columns: minmax(0, 1fr); }
+  .soon { grid-template-columns: repeat(3, 70%); overflow-x: auto; scroll-snap-type: x mandatory; }
+  .toolbar .wrap { flex-wrap: nowrap; overflow-x: auto; }
+  .chips { flex-wrap: nowrap; }
+  .chip { white-space: nowrap; }
+}
+@media (max-width: 520px) {
+  .kitCard { grid-template-columns: minmax(0, 1fr); }
+  .kitCard .img { aspect-ratio: 16 / 10; }
+}
+</style>
+</head>
+<body>
+
+<div class="announce"><span class="long">Free UAE delivery on orders over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">Free UAE delivery over AED 200  ·  Next-day before 2pm</span></div>
+<header class="site">
+  <div class="wrap">
+    <a class="wm" href="index.html" aria-label="nūrah home">n<span class="u">u</span>rah</a>
+    <nav class="main" aria-label="Main"><a href="#ihram" aria-current="page">Ihram</a><a href="#women">Women</a><a href="#accessories">Accessories</a><a href="#kits">Kits &amp; Gifts</a><a href="guides.html">Guides</a></nav>
+    <div class="tools"><span class="search">Search</span><span>EN | عربي</span><span class="acct">Account</span><a class="bag" href="bag.html">Bag (<span data-bag-count>0</span>)</a><button class="menuBtn" type="button" aria-expanded="false">Menu</button></div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap pageHead">
+    <div class="crumb"><a href="index.html">Home</a> / Shop</div>
+    <div class="intro">
+      <div style="display:grid;gap:10px"><h1>Shop</h1><p>Ihram, care and travel essentials for Hajj and Umrah. Every order includes a printed preparation guide reviewed by a qualified scholar.</p></div>
+    </div>
+    <div class="jump"><a href="#ihram">Ihram and men</a><a href="#women">Women</a><a href="#accessories">Accessories</a><a href="#kits">Kits &amp; gifts</a><a href="#compare">Compare fabrics</a></div>
+  </div>
+
+  <div class="toolbar" id="ihram">
+    <div class="wrap">
+      <div class="chips" role="group" aria-label="Filter by fabric">
+        <button class="chip" aria-pressed="true" data-f="all">All fabrics</button>
+        <button class="chip" aria-pressed="false" data-f="everyday">Everyday</button>
+        <button class="chip" aria-pressed="false" data-f="air">Air</button>
+        <button class="chip" aria-pressed="false" data-f="soft">Soft</button>
+        <button class="chip" aria-pressed="false" data-f="reserve">Reserve</button>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center"><span class="count" id="count">5 products</span><select aria-label="Sort"><option>Recommended</option><option>Price, low to high</option><option>Price, high to low</option></select></div>
+    </div>
+  </div>
+
+  <section class="wrap sub">
+    <div class="secHead"><div><div class="label">Men</div><h2>Ihram and men's clothing</h2><p>Four ihram fabrics, and a travel thobe for after ihram.</p></div></div>
+    <div class="grid5" id="ihramGrid" data-cards="everyday,air,soft,reserve,thobe"></div>
+  </section>
+
+
+
+
+  <section class="wrap sub" id="women">
+    <div class="secHead"><div><div class="label">Women</div><h2>Women's clothing and essentials</h2><p>Women do not need a white two-piece ihram. Modest, breathable abayas, a two-piece prayer set and hijabs, with an unscented care set.</p></div></div>
+    <div class="grid4" data-cards="abayaStone,abayaBlack,jilbab,hijab,careWomen,abayaIvory,abayaBlue"></div>
+    <p class="ruleNote">In the state of ihram, women wear ordinary modest clothing in any colour, loose and not sheer, and do not wear a face veil (niqab) or gloves. Our Umrah pieces are plain; decorated pieces are marked for after the journey.</p>
+  </section>
+
+  <section class="wrap sub" id="accessories">
+    <div class="secHead"><div><div class="label">Accessories</div><h2>Prayer, care and travel</h2><p>Accessories for the days of the journey. Every care product is fragrance-free and unflavoured; please check ingredients with your scholar if you are unsure.</p></div></div>
+    <div class="grid4" data-kind="icon" data-cards="belt,mat,tasbih,tasbihPearl,booklet,care,spray,lipbalm,miswak,bottle,umbrella"></div>
+    <div class="rules">
+      <span class="label">Good to know before you travel</span>
+      <div><b>Umbrella</b><p>Men in ihram should hold the umbrella above them, never rest anything on the head. Scholars differ on shade overhead; ask yours if unsure.</p></div>
+      <div><b>Care products</b><p>Fragrance is not permitted in the state of ihram. Our care products are fragrance-free and unflavoured; read every label on items bought elsewhere.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap sub" id="kits">
+    <div class="secHead"><div><div class="label">Kits &amp; gifts</div><h2>Kits for every pilgrim</h2><p>Complete sets for first-time pilgrims, women, couples and Hajj. Each is packed in the order it will be used and includes the printed preparation guide. Every care product is fragrance-free.</p></div></div>
+    <div class="grid3" data-kind="kit" data-cards="kitFirst,umrahKit,kitWomen,kitCouple,hajjKit,kitGift"></div>
+    <div class="groupBand">
+      <div><span class="label">Groups and travel agencies</span><h3>Travelling as a group?</h3><p>Kits for Umrah travel agencies, group leaders and community organisations, from 20 sets. Co-branded inserts are available, and kits are delivered before your orientation day.</p></div>
+      <button class="btn alt" type="button" onclick="NURAH.toast('Thank you. Our team will contact you about group pricing.', false)">Request group pricing</button>
+    </div>
+  </section>
+
+  <section class="band alt" id="compare" style="margin-top:64px">
+    <div class="wrap">
+      <div class="secHead"><div><div class="label">Fabric</div><h2>Compare fabrics</h2><p>Values are indicative and will be confirmed through supplier sampling.</p></div></div>
+      <div class="tableWrap">
+        <table>
+          <thead><tr><th></th><th>Everyday</th><th>Air</th><th>Soft</th><th>Reserve</th></tr></thead>
+          <tbody>
+            <tr><th>Recommended for</th><td>Value and reliability</td><td>Warm climates, long walks</td><td>A softer, heavier feel</td><td>Premium finish, gifting</td></tr>
+            <tr><th>Weave</th><td>Plain towelling</td><td>Open waffle weave</td><td>Plush terry</td><td>Long-staple cotton</td></tr>
+            <tr><th>Weight</th><td>Medium</td><td>Light</td><td>Heavy</td><td>Medium</td></tr>
+            <tr><th>Includes</th><td>Pouch, care card</td><td>Pouch, care card</td><td>Pouch, care card</td><td>Gift box, pouch, care card</td></tr>
+            <tr><th>Price</th><td>AED 109</td><td>AED 139</td><td>AED 149</td><td>AED 219</td></tr>
+            <tr><th></th><td><a class="link" href="product-page.html?fabric=everyday">View Everyday</a></td><td><a class="link" href="product-page.html?fabric=air">View Air</a></td><td><a class="link" href="product-page.html?fabric=soft">View Soft</a></td><td><a class="link" href="product-page.html?fabric=reserve">View Reserve</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><a class="wm" href="index.html">n<span class="u">u</span>rah</a><span class="muted">Hajj and Umrah essentials. UAE.</span></div>
+      <div><b>Shop</b><a href="#ihram">Men's ihram</a><a href="#women">Women's essentials</a><a href="#accessories">Accessories</a><a href="#kits">Kits &amp; gifts</a></div>
+      <div><b>Guides</b><a href="guide-what-to-pack.html">What to pack for Umrah</a><a href="guide-miqat-on-a-flight.html">Entering ihram on a flight</a><a href="guides.html">All guides</a></div>
+      <div><b>Help</b><a href="bag.html">Delivery</a><a href="bag.html">Returns</a><a href="#">Contact (WhatsApp)</a><a href="process.html">Design process board</a></div>
+    </div>
+    <p class="fine">Prototype for internal review only. Prices, specifications and policies are placeholders. Photography and artwork are client references and unlicensed stock previews, used locally for concept review; none of it is cleared for publication.</p>
+  </div>
+</footer>
+
+<script src="assets/site.js"></script>
+<script>
+(function () {
+  var chips = document.querySelectorAll(".chip"), cards = document.querySelectorAll("#ihramGrid .pcard"), count = document.getElementById("count");
+  chips.forEach(function (c) { c.addEventListener("click", function () {
+    chips.forEach(function (x) { x.setAttribute("aria-pressed", x === c ? "true" : "false"); });
+    var n = 0; cards.forEach(function (card) { var show = c.dataset.f === "all" || card.dataset.key === c.dataset.f; card.hidden = !show; if (show) n++; });
+    count.textContent = n + (n === 1 ? " product" : " products");
+  }); });
+})();
+</script>
+</body>
+</html>
