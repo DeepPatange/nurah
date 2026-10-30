@@ -142,3 +142,143 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); max-width
 .kcard .btn { justify-self: start; margin-top: 4px; }
 @media (max-width: 960px) { .grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .grid3 { grid-template-columns: minmax(0, 1fr); } }
+
+/* ===================== Wireframe v0.1 page structure: shared components ===================== */
+.tools .cur { color: var(--muted); }
+.crumbs { font-size: 12px; color: var(--muted); }
+.crumbs a { text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+.dotline { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); }
+.dotline span::before { content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--bronze); margin-right: 8px; vertical-align: middle; }
+
+/* page header: crumbs, title, intro, optional review line and filter chips */
+.pHead { padding-block: 28px 36px; display: grid; gap: 14px; }
+.pHead h1 { font-size: clamp(36px, 4.4vw, 60px); margin-top: 6px; }
+.pHead .intro { font-size: 17px; color: var(--muted); max-width: 62ch; }
+.chipRow { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--line); background: #fff; padding: 7px 14px; border-radius: 100px; font-size: 13px; cursor: pointer; white-space: nowrap; text-decoration: none; }
+.chip[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* image + text split */
+.split { display: grid; grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
+.split.reverse > .img { order: 2; }
+.split > .img { aspect-ratio: 4 / 3; background: var(--soft); overflow: hidden; position: relative; }
+.split > .img img { width: 100%; height: 100%; object-fit: cover; }
+.split .copy { display: grid; gap: 18px; align-content: center; }
+.split .copy .body { color: var(--muted); font-size: 16px; max-width: 52ch; }
+.ticks { list-style: none; padding: 0; margin: 0; display: grid; }
+.ticks li { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.ticks li::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--bronze); margin-top: .62em; }
+.ticks a { text-underline-offset: 3px; }
+
+/* numbered steps */
+.stepGrid { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 16px; }
+.stepGrid > * { border: 1px solid var(--line); background: #fff; padding: 22px; display: grid; gap: 10px; align-content: start; border-radius: 4px; text-decoration: none; }
+.stepGrid .num { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--ink); display: grid; place-items: center; font-size: 13px; }
+.stepGrid b { font-weight: 500; font-size: 16px; }
+.stepGrid p { color: var(--muted); font-size: 14px; }
+a.stepGrid > *:hover, .stepGrid > a:hover { border-color: var(--ink); }
+
+/* card grids */
+.cardGrid { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 28px 20px; }
+.card { display: grid; gap: 10px; align-content: start; text-decoration: none; }
+.card .img { aspect-ratio: var(--ratio, 4 / 3); background: var(--soft); overflow: hidden; position: relative; }
+.card .img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+a.card:hover .img img { transform: scale(1.03); }
+.card h3 { font-size: 18px; font-weight: 500; letter-spacing: -.01em; }
+.card p { color: var(--muted); font-size: 14px; }
+.card .price { font-size: 14px; }
+.card .more { font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
+.card.boxed { border: 1px solid var(--line); padding: 22px; border-radius: 4px; background: #fff; }
+.card .ico { width: 36px; height: 36px; border-radius: 50%; background: var(--soft); display: grid; place-items: center; font-family: var(--mono); font-size: 11px; color: var(--bronze); }
+a.card.boxed:hover { border-color: var(--ink); }
+
+/* dark banner */
+.banner { background: var(--ink); color: #fff; }
+.banner .wrap { display: flex; justify-content: space-between; align-items: center; gap: 24px 48px; flex-wrap: wrap; padding-block: clamp(40px, 5vw, 64px); }
+.banner h2 { color: #fff; }
+.banner p { color: rgba(255,255,255,.75); margin-top: 10px; max-width: 62ch; }
+.banner .btn { background: #fff; color: var(--ink); border-color: #fff; }
+.banner .btn:hover { background: var(--soft); }
+
+/* accordion */
+.acc details { border-top: 1px solid var(--line); padding: 18px 0; }
+.acc details:last-child { border-bottom: 1px solid var(--line); }
+.acc summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; font-size: 16px; }
+.acc summary::-webkit-details-marker { display: none; }
+.acc summary::after { content: "+"; font-size: 20px; line-height: 1; }
+.acc details[open] summary::after { content: "−"; }
+.acc details > div, .acc details > p { color: var(--muted); margin-top: 10px; max-width: 72ch; }
+
+/* forms */
+.field { display: grid; gap: 6px; }
+.field > span { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.field input, .field select, .field textarea { width: 100%; height: 48px; border: 1px solid var(--line); border-radius: 4px; padding: 0 14px; background: #fff; }
+.field textarea { height: auto; min-height: 110px; padding: 12px 14px; resize: vertical; }
+.formGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; }
+.formGrid .full { grid-column: 1 / -1; }
+
+/* trip bar */
+.tripBar { background: var(--soft); border-block: 1px solid var(--line); }
+.tripBar form { display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(0, 1fr)) auto; gap: 16px 20px; align-items: end; padding-block: 26px; }
+.tripBar h2 { font-size: 24px; letter-spacing: -.02em; }
+.tripBar p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.tripMsg { grid-column: 1 / -1; font-size: 14px; }
+.tripMsg:empty { display: none; }
+
+/* category layout: filters + grid */
+.shopLayout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; align-items: start; }
+.filters { position: sticky; top: calc(var(--header) + 20px); display: grid; gap: 22px; }
+.filters fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; }
+.filters legend { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; padding: 0; }
+.filters label { display: flex; gap: 10px; align-items: center; font-size: 14px; cursor: pointer; }
+.filters input { accent-color: var(--ink); width: 16px; height: 16px; margin: 0; }
+.gridHead { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; font-size: 13px; color: var(--muted); }
+.gridHead select { border: 1px solid var(--line); border-radius: 100px; padding: 6px 12px; background: #fff; font-size: 13px; }
+.noResults { padding: 32px 0; color: var(--muted); }
+
+/* footer (wireframe): large wordmark, four link columns, trip reminders */
+footer .fWm { display: inline-block; font-size: clamp(64px, 10vw, 140px); margin-bottom: 40px; }
+.fGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.5fr); gap: 32px; font-size: 14px; }
+.fGrid > div { display: grid; gap: 8px; align-content: start; }
+.fGrid b { font-weight: 500; }
+.fGrid a { text-decoration: none; color: var(--muted); }
+.fGrid a:hover { color: var(--ink); }
+.signup { display: grid; gap: 10px; align-content: start; }
+.signup p { color: var(--muted); font-size: 13.5px; }
+.signup div { display: flex; gap: 8px; }
+.signup input { flex: 1; min-width: 0; height: 40px; border: 1px solid var(--line); border-radius: 100px; padding: 0 16px; background: #fff; }
+
+@media (max-width: 1180px) {
+  .tripBar form { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tripBar form > :first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 960px) {
+  .tools .cur { display: none; }
+  .split { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .split.reverse > .img { order: 0; }
+  .stepGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cardGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .shopLayout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .filters { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .fGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .signup { grid-column: 1 / -1; }
+  .banner .wrap { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 560px) {
+  .tripBar form { grid-template-columns: minmax(0, 1fr); }
+  .cardGrid, .stepGrid, .formGrid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* product cards in two columns on phones: price under the name so long names don't squeeze */
+@media (max-width: 560px) {
+  .pcard .row, .icard .row, .kcard .row { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .icard .btn { width: 100%; padding: 0 10px; }
+}
+
+/* footer between tablet and desktop: trip reminders on its own row so the email field has room */
+@media (max-width: 1180px) and (min-width: 961px) {
+  .fGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .signup { grid-column: 1 / -1; max-width: 520px; }
+}

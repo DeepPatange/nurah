@@ -93,8 +93,28 @@
       '<button class="btn sm" type="button" data-add="' + p.id + '">Add kit to bag</button></div>';
   }
   function findProduct(k) { if (P[k]) return P[k]; for (var x in P) if (P[x].id === k) return P[x]; return null; }
-  document.querySelectorAll("[data-cards]").forEach(function (box) {
+  function renderCards(box) {
     box.innerHTML = box.dataset.cards.split(",").map(function (k) { var p = findProduct(k.trim()); return p ? (box.dataset.kind === "kit" ? kitHTML(p) : box.dataset.kind === "icon" ? iconHTML(p) : cardHTML(p)) : ""; }).join("");
+  }
+  document.querySelectorAll("[data-cards]").forEach(renderCards);
+  // page scripts can re-render a filtered grid: set box.dataset.cards, then NURAH.renderCards(box)
+  window.NURAH.renderCards = renderCards; window.NURAH.find = findProduct;
+  window.NURAH.html = { card: cardHTML, icon: iconHTML, kit: kitHTML };
+
+  // trip details (kept in this browser only): { trip: "Umrah", date: "2026-11-14", as: "Man" }
+  var TKEY = "nurah-trip";
+  function tripGet() { try { return JSON.parse(localStorage.getItem(TKEY)) || null; } catch (e) { return null; } }
+  function tripSet(t) { try { localStorage.setItem(TKEY, JSON.stringify(t)); } catch (e) {} }
+  // next-day UAE delivery when ordered before 2pm, otherwise the day after
+  function arrival(from) { var d = from ? new Date(from) : new Date(); var add = d.getHours() < 14 ? 1 : 2; d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + add); return d; }
+  function fmtDate(d) { return new Date(d).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }); }
+  function daysBetween(a, b) { var x = new Date(a), y = new Date(b); x.setHours(12, 0, 0, 0); y.setHours(12, 0, 0, 0); return Math.round((y - x) / 864e5); }
+  window.NURAH.trip = { get: tripGet, set: tripSet };
+  window.NURAH.arrival = arrival; window.NURAH.fmtDate = fmtDate; window.NURAH.daysBetween = daysBetween;
+
+  // footer trip reminders
+  document.querySelectorAll("form[data-signup]").forEach(function (f) {
+    f.addEventListener("submit", function (e) { e.preventDefault(); toast("Thank you. Your trip reminders are set.", false); f.reset(); });
   });
   document.addEventListener("click", function (e) {
     var b = e.target.closest("[data-add]");
@@ -104,9 +124,83 @@
     add({ id: p.id + (p.key ? "-regular" : ""), name: p.name, variant: p.key ? "Regular · up to 180 cm" : "", price: p.price, img: p.img, icon: p.icon });
   });
 
-  // mobile menu
-  var mb = document.querySelector(".menuBtn"), nav = document.querySelector("nav.main");
-  if (mb && nav) mb.addEventListener("click", function () { var o = nav.classList.toggle("open"); mb.setAttribute("aria-expanded", o ? "true" : "false"); mb.textContent = o ? "Close" : "Menu"; });
+  // header navigation (see assets/nav.css). Desktop: hovering a top link opens its panel after a short pause;
+  // moving to another link swaps the panel; leaving the header, Escape or a click outside closes it.
+  // Touch screens: the first tap on a top link opens its panel, the second follows the link.
+  // Phones: the Menu button opens a full-screen list; tapping a section shows its pages, "All" goes back.
+  var navEl = document.querySelector("nav.main"), mega = navEl && navEl.querySelector(".mega"), mb = document.querySelector(".menuBtn");
+  if (navEl && mega) {
+    var headerEl = document.querySelector("header.site");
+    var desk = window.matchMedia("(min-width: 961px)"), canHover = window.matchMedia("(hover: hover)");
+    var items = [].slice.call(navEl.querySelectorAll(".ti")), panels = {};
+    [].forEach.call(mega.querySelectorAll(".mPanel"), function (p) { panels[p.dataset.panel] = p; });
+    var scrim = document.createElement("div"); scrim.className = "navScrim"; document.body.appendChild(scrim);
+    var cur = null, tOpen, tClose, warmed = false;
+    var warm = function () { if (warmed) return; warmed = true; [].forEach.call(mega.querySelectorAll("img[loading]"), function (i) { i.loading = "eager"; }); };
+    // line panel content up with the first top link; fall back to the page margin if it would not fit
+    var align = function () {
+      var x = Math.round(items[0].getBoundingClientRect().left);
+      mega.style.setProperty("--nav-left", x + "px");
+      var inner = panels[cur].querySelector(".mInner");
+      if (inner.scrollWidth > inner.clientWidth + 1) mega.style.removeProperty("--nav-left");
+    };
+    var show = function (key) {
+      clearTimeout(tOpen); clearTimeout(tClose);
+      cur = key && panels[key] ? key : null;
+      items.forEach(function (ti) {
+        var on = ti.dataset.panel === cur, b = ti.querySelector(".tiBtn");
+        ti.classList.toggle("open", on); if (b) b.setAttribute("aria-expanded", on ? "true" : "false");
+      });
+      Object.keys(panels).forEach(function (k) { panels[k].classList.toggle("on", k === cur); });
+      navEl.classList.toggle("megaOpen", !!cur);
+      if (desk.matches) {
+        if (cur) align();
+        mega.style.height = cur ? panels[cur].offsetHeight + "px" : "0px";
+        if (cur) scrim.style.setProperty("--scrim-top", Math.max(0, headerEl.getBoundingClientRect().bottom) + "px");
+        scrim.classList.toggle("on", !!cur); document.body.classList.toggle("navOpen", !!cur);
+      }
+    };
+    items.forEach(function (ti) {
+      var a = ti.querySelector("a"), b = ti.querySelector(".tiBtn"), key = ti.dataset.panel;
+      ti.addEventListener("mouseenter", function () {
+        if (!desk.matches || !canHover.matches) return;
+        warm(); clearTimeout(tClose); clearTimeout(tOpen);
+        if (cur) show(key); else tOpen = setTimeout(function () { show(key); }, 150);
+      });
+      if (b) b.addEventListener("click", function (e) {
+        e.stopPropagation(); warm(); show(cur === key ? null : key);
+        if (cur) { var first = panels[key].querySelector(".mCol a"); if (first) first.focus(); }
+      });
+      a.addEventListener("click", function (e) {
+        if (!desk.matches) { e.preventDefault(); show(key); navEl.classList.add("drill"); navEl.scrollTop = 0; var bk = panels[key].querySelector(".mBack"); if (bk) bk.focus({ preventScroll: true }); return; }
+        if (!canHover.matches && cur !== key) { e.preventDefault(); warm(); show(key); }
+      });
+    });
+    navEl.addEventListener("mouseenter", function () { clearTimeout(tClose); });
+    navEl.addEventListener("mouseleave", function () { if (!desk.matches || !canHover.matches) return; clearTimeout(tOpen); tClose = setTimeout(function () { show(null); }, 250); });
+    navEl.addEventListener("focusout", function (e) { if (cur && desk.matches && !navEl.contains(e.relatedTarget)) show(null); });
+    [].forEach.call(mega.querySelectorAll(".mBack"), function (bk) { bk.addEventListener("click", function () { navEl.classList.remove("drill"); var k = cur; show(null); var ti = navEl.querySelector('.ti[data-panel="' + k + '"] a'); if (ti) ti.focus({ preventScroll: true }); }); });
+    document.addEventListener("click", function (e) { if (cur && desk.matches && !e.target.closest("nav.main")) show(null); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape" || !cur || !desk.matches) return;
+      var inside = navEl.contains(document.activeElement), ti = navEl.querySelector('.ti[data-panel="' + cur + '"]');
+      show(null); if (inside && ti) ti.querySelector(".tiBtn").focus();
+    });
+    var closeMobile = function () {
+      navEl.classList.remove("open", "drill"); navEl.style.height = navEl.style.maxHeight = ""; document.body.classList.remove("menuOpen");
+      if (mb) { mb.setAttribute("aria-expanded", "false"); mb.textContent = "Menu"; }
+      if (!desk.matches) show(null);
+    };
+    if (mb) mb.addEventListener("click", function () {
+      if (navEl.classList.contains("open")) { closeMobile(); return; }
+      navEl.classList.add("open"); document.body.classList.add("menuOpen"); mb.setAttribute("aria-expanded", "true"); mb.textContent = "Close";
+      navEl.style.height = navEl.style.maxHeight = Math.max(240, window.innerHeight - headerEl.getBoundingClientRect().bottom) + "px";
+    });
+    window.addEventListener("resize", function () {
+      if (desk.matches) { if (navEl.classList.contains("open")) closeMobile(); if (cur) { align(); mega.style.height = panels[cur].offsetHeight + "px"; } }
+      else { mega.style.height = ""; scrim.classList.remove("on"); document.body.classList.remove("navOpen"); }
+    });
+  }
 
   // painted illustration (showcase only): <div class="paintBox" data-paint="haram" data-mode="view|loop">
   // view: paints once when it comes into view. loop: paints, holds, fades and repaints while visible.

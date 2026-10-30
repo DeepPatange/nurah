@@ -1,0 +1,49 @@
+/* nūrah category pages (Ihram, Women, Accessories, Kits & gifts). Builds on assets/site.css. */
+.pHead { padding-bottom: 28px; }
+.catMini { padding-bottom: 40px; }
+.catMini .card.boxed { gap: 8px; }
+.catMini .card h3 { font-size: 17px; }
+.catMini .card .price { color: var(--ink); margin-top: 2px; }
+.catMini .links { display: flex; gap: 6px 16px; flex-wrap: wrap; margin-top: 4px; }
+.catMini .links a { font-size: 14px; text-underline-offset: 4px; }
+
+.catMain { border-top: 1px solid var(--line); padding-top: 32px; padding-bottom: clamp(56px, 7vw, 96px); }
+.catGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 20px; }
+.catGrid[hidden] { display: none; }
+.filters .clear { border: 0; background: none; padding: 0; font-size: 13px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; justify-self: start; }
+.gridHead .right { display: flex; gap: 10px; align-items: center; }
+.filterToggle { display: none; }
+.noResults { display: grid; gap: 14px; justify-items: start; }
+.noResults[hidden] { display: none; }
+
+/* image + text split on these pages uses portrait product and stock photos */
+.split > .img.portrait { aspect-ratio: 4 / 5; width: 100%; max-width: 520px; justify-self: center; background: #fff; border: 1px solid #EEEEEE; }
+.split .note { font-size: 13px; color: var(--muted); }
+.sizeTable { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid var(--line); }
+.sizeTable th, .sizeTable td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.sizeTable thead th { font-weight: 500; background: #FAFAFA; }
+.sizeTable tbody th { font-weight: 500; }
+.sizeTable tr:last-child th, .sizeTable tr:last-child td { border-bottom: 0; }
+
+/* light band for group orders (kits page) */
+.groupBand { display: flex; justify-content: space-between; align-items: center; gap: 20px 40px; flex-wrap: wrap; border: 1px solid var(--line); padding: clamp(24px, 3vw, 36px); }
+.groupBand h2 { font-size: clamp(24px, 2.4vw, 32px); margin-top: 8px; }
+.groupBand p { color: var(--muted); max-width: 70ch; margin-top: 8px; }
+
+@media (max-width: 960px) {
+  .catGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 12px; }
+  .filterToggle { display: inline-flex; }
+  .filters { display: none; }
+  .filters.open { display: grid; border: 1px solid var(--line); padding: 16px; }
+  .catMini .cardGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .catMini .card.boxed { padding: 16px; }
+  .chipRow { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-right: calc(-1 * var(--gutter)); padding-right: var(--gutter); }
+  .chipRow::-webkit-scrollbar { display: none; }
+}
+@media (max-width: 560px) {
+  .catGrid.kits { grid-template-columns: minmax(0, 1fr); }
+  .catGrid .pcard .row, .catGrid .icard .row { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .catGrid .icard .btn { width: 100%; padding: 0 10px; }
+  .gridHead { flex-wrap: wrap; }
+  .split > .img.portrait { max-width: none; }
+}

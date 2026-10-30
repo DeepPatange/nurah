@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Build your Umrah kit · nūrah (prototype)</title>
+<meta name="description" content="Build an Umrah or Hajj kit in five steps: choose your ihram or abaya, add fragrance-free care and travel essentials, and check delivery against your travel date.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans+Arabic:wght@400&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+.builder { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 56px; align-items: start; padding-bottom: clamp(56px, 7vw, 96px); }
+.builder [hidden] { display: none !important; }
+.kstep { border-top: 1px solid var(--line); padding: 28px 0; display: grid; gap: 16px; }
+.kstep:first-child { border-top: 0; padding-top: 4px; }
+.kstep h2 { font-size: 22px; letter-spacing: -.02em; display: flex; align-items: center; gap: 12px; }
+.kstep h2 .n { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--ink); display: grid; place-items: center; font-size: 13px; letter-spacing: 0; flex: none; }
+.help { color: var(--muted); font-size: 14px; max-width: 64ch; }
+.sublabel { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.block { display: grid; gap: 12px; }
+.block + .block { margin-top: 12px; }
+.tripFields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+
+/* who is travelling: family counts */
+.fam { display: grid; gap: 4px; border: 1px solid var(--line); border-radius: 6px; padding: 8px 16px 14px; }
+.fam[hidden] { display: none; }
+.famRow { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.famRow small { display: block; color: var(--muted); font-size: 13px; }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 100px; flex: none; }
+.stepper button { width: 34px; height: 34px; border: 0; background: none; font-size: 16px; cursor: pointer; }
+.stepper button:disabled { opacity: .3; cursor: default; }
+.stepper output { min-width: 22px; text-align: center; font-size: 14px; }
+
+/* option cards (ihram fabric, abaya) */
+.opts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.opt { position: relative; display: grid; gap: 4px; align-content: start; border: 1px solid var(--line); border-radius: 4px; padding: 8px 8px 12px; cursor: pointer; background: #fff; }
+.opt input { position: absolute; opacity: 0; pointer-events: none; }
+.opt:has(input:checked) { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.opt:has(input:focus-visible) { outline: 2px solid var(--bronze); outline-offset: 2px; }
+.opt .ph { aspect-ratio: 4 / 5; overflow: hidden; background: #fff; margin-bottom: 6px; }
+.opt .ph img { width: 100%; height: 100%; object-fit: cover; }
+.opt b { font-weight: 500; font-size: 14.5px; }
+.opt span { font-size: 13px; color: var(--muted); }
+.opt .pr { color: var(--ink); font-size: 14px; }
+.lenRow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.lenRow a { font-size: 14px; text-underline-offset: 4px; }
+.toggle { display: flex; gap: 12px; align-items: center; font-size: 15px; cursor: pointer; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--ink); margin: 0; }
+.toggle .pr { color: var(--muted); font-size: 14px; }
+.note { border-left: 2px solid var(--bronze); padding: 2px 0 2px 14px; font-size: 13.5px; color: var(--muted); max-width: 70ch; }
+
+/* essentials */
+.ess { display: grid; border-top: 1px solid var(--line); }
+.erow { display: grid; grid-template-columns: 20px 64px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+.erow input { width: 18px; height: 18px; accent-color: var(--ink); margin: 0; }
+.erow .ph { width: 64px; height: 64px; border: 1px solid #EEEEEE; overflow: hidden; background: #fff; }
+.erow .ph img { width: 100%; height: 100%; object-fit: cover; }
+.erow b { font-weight: 500; font-size: 15px; display: block; }
+.erow small { color: var(--muted); font-size: 13px; }
+.erow .pr { font-size: 14px; white-space: nowrap; text-align: right; }
+.erow .pr em { display: block; font-style: normal; font-size: 12px; color: var(--muted); }
+
+/* finishing touches */
+.touches { display: grid; border-top: 1px solid var(--line); }
+.touches > div { padding: 14px 0; border-bottom: 1px solid var(--line); display: grid; gap: 12px; }
+.touches .toggle input:disabled { opacity: 1; }
+.touches .field textarea { min-height: 88px; }
+
+/* summary */
+.sum { position: sticky; top: calc(var(--header) + 20px); border: 1px solid var(--line); border-radius: 8px; padding: 24px; display: grid; gap: 14px; background: #fff; }
+.sum h2 { font-size: 22px; letter-spacing: -.02em; }
+.lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
+.lines li { display: flex; justify-content: space-between; gap: 12px; }
+.lines li span:last-child { white-space: nowrap; }
+.lines .incl span:last-child { color: var(--ok); }
+.sline { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.sline.save { color: var(--bronze); }
+.sline.save[hidden] { display: none; }
+.sline.total { font-size: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
+.small { font-size: 12.5px; color: var(--muted); }
+.check { border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; font-size: 14px; display: grid; gap: 4px; }
+.check b { font-weight: 500; }
+.check.ok b { color: var(--ok); }
+.check.warn { border-color: #E5C3AE; background: #FFF8F3; }
+.check.warn b { color: #9A4A22; }
+.sum .btn { width: 100%; }
+.added { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 14px; color: var(--ok); }
+.added[hidden] { display: none; }
+
+/* mobile total bar */
+.mobBar { display: none; }
+
+/* what's in the box */
+.boxSplit > .img { aspect-ratio: 4 / 5; max-height: 620px; background: #fff; border: 1px solid #EEEEEE; }
+.boxSplit > .img img { object-fit: contain; }
+
+@media (max-width: 1180px) { .builder { grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; } }
+@media (max-width: 960px) {
+  .builder { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .sum { position: static; }
+  .opts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tripFields { grid-template-columns: minmax(0, 1fr); }
+  .mobBar { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; background: #fff; border-top: 1px solid var(--line); padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); justify-content: space-between; align-items: center; gap: 12px; transition: transform .25s ease; }
+  .mobBar.hide { transform: translateY(110%); }
+  .mobBar span { font-size: 12px; color: var(--muted); display: block; }
+  .mobBar b { font-weight: 500; font-size: 17px; }
+  .mobBar .btn { height: 44px; padding: 0 20px; }
+  body { padding-bottom: 72px; }
+  .boxSplit > .img { max-height: none; }
+}
+@media (max-width: 520px) {
+  .erow { grid-template-columns: 20px 52px minmax(0, 1fr); }
+  .erow .ph { width: 52px; height: 52px; }
+  .erow .pr { grid-column: 3; text-align: left; }
+  .erow .pr em { display: inline; margin-left: 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .mobBar { transition: none; } }
+</style>
+<link rel="stylesheet" href="assets/nav.css">
+</head>
+<body>
+
+<div class="announce"><span class="long">Free UAE delivery on orders over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">Free UAE delivery over AED 200  ·  Next-day before 2pm</span></div>
+<header class="site">
+  <div class="wrap">
+    <a class="wm" href="index.html" aria-label="nūrah home">n<span class="u">u</span>rah</a>
+    <nav class="main" aria-label="Main"><div class="topLinks"><div class="ti" data-panel="ihram"><a href="ihram.html">Ihram</a><button class="tiBtn" type="button" aria-expanded="false" aria-controls="np-ihram" aria-label="Show Ihram menu"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5 5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button></div><div class="ti" data-panel="women"><a href="women.html">Women</a><button class="tiBtn" type="button" aria-expanded="false" aria-controls="np-women" aria-label="Show Women menu"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5 5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button></div><div class="ti" data-panel="accessories"><a href="accessories.html">Accessories</a><button class="tiBtn" type="button" aria-expanded="false" aria-controls="np-accessories" aria-label="Show Accessories menu"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5 5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button></div><div class="ti" data-panel="kits"><a href="kits.html" aria-current="page">Kits &amp; Gifts</a><button class="tiBtn" type="button" aria-expanded="false" aria-controls="np-kits" aria-label="Show Kits and Gifts menu"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5 5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button></div><div class="ti" data-panel="prepare"><a href="guides.html">Prepare</a><button class="tiBtn" type="button" aria-expanded="false" aria-controls="np-prepare" aria-label="Show Prepare menu"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5 5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button></div><div class="ti" data-panel="about"><a href="about.html">About</a><button class="tiBtn" type="button" aria-expanded="false" aria-controls="np-about" aria-label="Show About menu"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5 5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button></div></div><div class="mega"><div class="mPanel" id="np-ihram" data-panel="ihram"><div class="mInner"><button class="mBack" type="button">All</button><p class="mTitle">Ihram</p><div class="mCols"><div class="mCol big"><p class="mHead">Shop ihram</p><ul><li><a href="ihram.html">All ihram</a></li><li><a href="product-page.html?fabric=air">Air Ihram</a></li><li><a href="product-page.html?fabric=everyday">Everyday Ihram</a></li><li><a href="product-page.html?fabric=soft">Soft Ihram</a></li><li><a href="product-page.html?fabric=reserve">Reserve Ihram</a></li></ul></div><div class="mCol"><p class="mHead">Help choosing</p><ul><li><a href="compare.html#table">Compare fabrics</a></li><li><a href="compare.html#finder">Fabric finder</a></li><li><a href="ihram.html#size">Size guide</a></li><li><a href="guide-miqat-on-a-flight.html">Entering ihram on a flight</a></li></ul></div><div class="mCol"><p class="mHead">Pair with</p><ul><li><a href="accessories.html?chip=travel">Ihram belt</a></li><li><a href="accessories.html?chip=care">Fragrance-free care</a></li><li><a href="ihram.html?chip=after">Travel thobe</a></li><li><a href="ihram.html?chip=kit">Ihram in a kit</a></li></ul></div></div><a class="mPromo" href="product-page.html?fabric=air"><span class="mImg onWhite"><img src="media/products/ihram-air.jpg" alt="" loading="lazy"></span><span class="mCap"><b>Air Ihram</b><span>Lightweight, for warm climates</span><i>AED 139</i></span></a></div></div><div class="mPanel" id="np-women" data-panel="women"><div class="mInner"><button class="mBack" type="button">All</button><p class="mTitle">Women</p><div class="mCols"><div class="mCol big"><p class="mHead">Shop women</p><ul><li><a href="women.html">All women's essentials</a></li><li><a href="women.html?chip=umrah">For Umrah</a></li><li><a href="women.html?chip=prayer">Prayer sets</a></li><li><a href="women.html?chip=hijab">Hijabs</a></li><li><a href="women.html?chip=care">Unscented care</a></li></ul></div><div class="mCol"><p class="mHead">Help choosing</p><ul><li><a href="women.html#size">Size guide</a></li><li><a href="kits.html?chip=women">Women's Umrah Kit</a></li><li><a href="guide-what-to-pack.html">Packing checklist</a></li></ul></div></div><a class="mPromo" href="women.html?chip=umrah"><span class="mImg onWhite"><img src="media/products/abaya-grey.jpg" alt="" loading="lazy"></span><span class="mCap"><b>Umrah abaya, stone</b><span>Plain, loose and opaque</span><i>AED 249</i></span></a></div></div><div class="mPanel" id="np-accessories" data-panel="accessories"><div class="mInner"><button class="mBack" type="button">All</button><p class="mTitle">Accessories</p><div class="mCols"><div class="mCol big"><p class="mHead">Shop accessories</p><ul><li><a href="accessories.html">All accessories</a></li><li><a href="accessories.html?chip=prayer">Prayer</a></li><li><a href="accessories.html?chip=care">Fragrance-free care</a></li><li><a href="accessories.html?chip=travel">Travel</a></li></ul></div><div class="mCol"><p class="mHead">For your trip</p><ul><li><a href="kit-builder.html" aria-current="page">Build your kit</a></li><li><a href="kits.html#gifts">Gift options</a></li><li><a href="guide-what-to-pack.html">Packing checklist</a></li></ul></div></div><a class="mPromo" href="accessories.html?chip=travel"><span class="mImg onWhite"><img src="media/products/belt.jpg" alt="" loading="lazy"></span><span class="mCap"><b>Ihram belt, white</b><span>Zip pockets for passport, phone and cards</span><i>AED 49</i></span></a></div></div><div class="mPanel" id="np-kits" data-panel="kits"><div class="mInner"><button class="mBack" type="button">All</button><p class="mTitle">Kits &amp; Gifts</p><div class="mCols"><div class="mCol big"><p class="mHead">Kits and gifts</p><ul><li><a href="kits.html">All kits</a></li><li><a href="kit-builder.html" aria-current="page">Build your kit</a></li><li><a href="kits.html#gifts">Gift options</a></li><li><a href="groups.html">Group orders</a></li></ul></div><div class="mCol"><p class="mHead">Shop by kit</p><ul><li><a href="kits.html?chip=umrah">Umrah kits</a></li><li><a href="kits.html?chip=hajj">Hajj kit</a></li><li><a href="kits.html?chip=women">Women's kit</a></li><li><a href="kits.html?chip=couple">Couple's kit</a></li><li><a href="kits.html?chip=gift">Gift box</a></li></ul></div></div><a class="mPromo" href="kits.html?chip=umrah"><span class="mImg onWhite"><img src="media/products/kit-first.jpg" alt="" loading="lazy"></span><span class="mCap"><b>First-time Pilgrim Kit</b><span>Everything a first Umrah needs</span><i>AED 210</i></span></a></div></div><div class="mPanel" id="np-prepare" data-panel="prepare"><div class="mInner"><button class="mBack" type="button">All</button><p class="mTitle">Prepare</p><div class="mCols"><div class="mCol big"><p class="mHead">Prepare</p><ul><li><a href="guides.html">Guide hub</a></li><li><a href="guides.html#stepsTitle">Umrah step by step</a></li><li><a href="guide-what-to-pack.html">Packing checklist</a></li><li><a href="guide-miqat-on-a-flight.html">Ihram on a flight</a></li></ul></div><div class="mCol"><p class="mHead">Plan ahead</p><ul><li><a href="guides.html#rites">The rites of Umrah</a></li><li><a href="guides.html#pdfTitle">Printable checklist</a></li><li><a href="compare.html#finder">Fabric finder</a></li><li><a href="bag.html#delivery">Delivery dates</a></li></ul></div></div><a class="mPromo" href="guides.html#stepsTitle"><span class="mImg"><img src="media/illustrations/9b2c169bcad6304a160ba37d799c041d.jpg" alt="" loading="lazy"></span><span class="mCap"><b>Umrah step by step</b><span>Based on official Nusuk guidance</span></span></a></div></div><div class="mPanel" id="np-about" data-panel="about"><div class="mInner"><button class="mBack" type="button">All</button><p class="mTitle">About</p><div class="mCols"><div class="mCol big"><p class="mHead">About n&#363;rah</p><ul><li><a href="about.html">Our approach</a></li><li><a href="about.html#review">Content review</a></li><li><a href="groups.html">Groups &amp; agencies</a></li></ul></div><div class="mCol"><p class="mHead">Help</p><ul><li><a href="bag.html#delivery">Delivery and returns</a></li><li><a href="ihram.html#size">Size guide</a></li><li><a href="index.html#faq">FAQs</a></li><li><a href="#">Contact on WhatsApp</a></li></ul></div><div class="mCol"><p class="mHead">Project</p><ul><li><a href="process.html">Design process board</a></li></ul></div></div><a class="mPromo" href="about.html"><span class="mImg"><img src="media/haram-arch.jpg" alt="" loading="lazy"></span><span class="mCap"><b>Our approach</b><span>Why we started and how we work</span></span></a></div></div></div><div class="mExtras"><a class="mBtn" href="kit-builder.html">Build your kit</a><a href="bag.html">Bag</a><a href="bag.html#delivery">Delivery and returns</a><a href="index.html#faq">FAQs</a><span>EN | عربي</span></div></nav>
+    <div class="tools"><span class="search">Search</span><span>EN | عربي</span><span class="cur">AED</span><span class="acct">Account</span><a class="kitLink" href="kit-builder.html">Build your kit</a><a class="bag" href="bag.html">Bag (<span data-bag-count>0</span>)</a><button class="menuBtn" type="button" aria-expanded="false">Menu</button></div>
+  </div>
+</header>
+
+<main>
+  <section class="wrap pHead">
+    <div class="crumbs"><a href="index.html">Home</a> / <a href="kits.html">Kits</a> / Build your kit</div>
+    <h1>Build your kit</h1>
+    <p class="intro">Tell us who is travelling. We suggest what you need; you decide what goes in.</p>
+    <div class="dotline"><span>Printed guide and dua booklet in every kit</span><span>Next-day UAE delivery</span><span>Fragrance-free care</span></div>
+  </section>
+
+  <section class="wrap builder" aria-label="Kit builder">
+    <div class="steps">
+
+      <section class="kstep" aria-labelledby="h1s">
+        <h2 id="h1s"><span class="n">1</span>Who is travelling?</h2>
+        <div class="chipRow" id="who" role="group" aria-label="Who is travelling">
+          <button class="chip" type="button" data-who="man" aria-pressed="true">Man</button>
+          <button class="chip" type="button" data-who="woman" aria-pressed="false">Woman</button>
+          <button class="chip" type="button" data-who="couple" aria-pressed="false">Couple</button>
+          <button class="chip" type="button" data-who="family" aria-pressed="false">Family</button>
+          <button class="chip" type="button" data-who="gift" aria-pressed="false">Buying as a gift</button>
+        </div>
+        <div class="fam" id="fam" hidden>
+          <div class="famRow"><div>Men and boys<small>One ihram set each</small></div><div class="stepper"><button type="button" data-fam="m" data-d="-1" aria-label="Fewer men and boys">−</button><output id="famM">2</output><button type="button" data-fam="m" data-d="1" aria-label="More men and boys">+</button></div></div>
+          <div class="famRow"><div>Women and girls<small>One abaya each</small></div><div class="stepper"><button type="button" data-fam="w" data-d="-1" aria-label="Fewer women and girls">−</button><output id="famW">2</output><button type="button" data-fam="w" data-d="1" aria-label="More women and girls">+</button></div></div>
+          <p class="small" style="margin-top:8px">We count one ihram and one belt for each man or boy, one abaya for each woman or girl, and one care set per traveller. Prayer and travel items are added once; you can change quantities in your bag.</p>
+        </div>
+      </section>
+
+      <section class="kstep" aria-labelledby="h2s">
+        <h2 id="h2s"><span class="n">2</span>Your trip</h2>
+        <p class="help">Used for delivery timing and an optional reminder. Not required.</p>
+        <div class="tripFields">
+          <label class="field"><span>Trip</span><select id="tTrip"><option>Umrah</option><option>Hajj</option></select></label>
+          <label class="field"><span>Travel date</span><input type="date" id="tDate"></label>
+          <label class="field"><span>Flying from</span><select id="tFrom"><option value="">Select</option><option>Dubai (DXB)</option><option>Abu Dhabi (AUH)</option><option>Sharjah (SHJ)</option><option>Other</option></select></label>
+        </div>
+      </section>
+
+      <section class="kstep" aria-labelledby="h3s">
+        <h2 id="h3s"><span class="n">3</span><span id="s3title">Choose your ihram fabric</span></h2>
+        <div class="block" id="ihramBlock">
+          <span class="sublabel" id="ihramLabel" hidden>Ihram</span>
+          <div class="opts" id="fabricOpts" role="radiogroup" aria-label="Ihram fabric"></div>
+          <div class="lenRow"><span class="sublabel">Length</span>
+            <div class="chipRow" id="len"><button class="chip" type="button" data-len="Regular" aria-pressed="true">Regular · up to 180 cm</button><button class="chip" type="button" data-len="Long" aria-pressed="false">Long · 180 cm and above</button></div>
+            <a href="compare.html">Compare fabrics</a>
+          </div>
+        </div>
+        <div class="block" id="abayaBlock" hidden>
+          <span class="sublabel" id="abayaLabel" hidden>Abaya</span>
+          <div class="opts three" id="abayaOpts" role="radiogroup" aria-label="Abaya"></div>
+          <label class="toggle"><input type="checkbox" id="hijab" checked> <span>Add a cotton jersey hijab <span class="pr" id="hijabPrice"></span></span></label>
+          <p class="note">In the state of ihram, women wear ordinary modest clothing in any colour, loose and not sheer. Our Umrah abayas are plain.</p>
+        </div>
+      </section>
+
+      <section class="kstep" aria-labelledby="h4s">
+        <h2 id="h4s"><span class="n">4</span>Add essentials</h2>
+        <p class="help">Pre-selected because most first-time pilgrims need them. Untick anything you already have.</p>
+        <div class="ess" id="ess"></div>
+      </section>
+
+      <section class="kstep" aria-labelledby="h5s">
+        <h2 id="h5s"><span class="n">5</span>Finishing touches</h2>
+        <div class="touches">
+          <div><label class="toggle"><input type="checkbox" checked disabled> <span>Printed guide and dua booklet <span class="pr">Included in every kit</span></span></label></div>
+          <div>
+            <label class="toggle"><input type="checkbox" id="giftWrap"> <span>Gift wrap and note <span class="pr">Complimentary</span></span></label>
+            <label class="field" id="noteField" hidden><span>Gift note</span><textarea id="giftNote" maxlength="240" placeholder="Your message, up to 240 characters"></textarea></label>
+          </div>
+          <div><label class="toggle"><input type="checkbox" id="hidePrices"> <span>Hide prices on the packing slip</span></label></div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="sum" id="summary" aria-label="Your kit">
+      <h2>Your kit</h2>
+      <ul class="lines" id="lines"></ul>
+      <div class="sline"><span>Subtotal</span><span id="sSub">AED 0</span></div>
+      <div class="sline save" id="sSaveRow" hidden><span>Kit saving (10%)</span><span id="sSave"></span></div>
+      <p class="small" id="sRule">Save 10% when your kit includes an ihram or abaya and at least three essentials.</p>
+      <div class="sline total"><span>Total</span><span id="sTotal">AED 0</span></div>
+      <div class="check" id="sCheck"></div>
+      <button class="btn" type="button" id="addKit">Add kit to bag</button>
+      <div class="added" id="added" hidden><span>Kit added to your bag</span><a class="link" href="bag.html">View bag</a></div>
+      <p class="small">All prices are placeholders for the concept.</p>
+    </aside>
+  </section>
+
+  <div class="mobBar" id="mobBar" aria-hidden="true">
+    <div><span>Kit total</span><b id="mTotal">AED 0</b></div>
+    <button class="btn" type="button" id="mAdd" tabindex="-1">Add kit to bag</button>
+  </div>
+
+  <section class="band alt">
+    <div class="wrap split boxSplit">
+      <div class="img"><img src="media/products/kit-first.jpg" alt="Contents of the First-time Pilgrim Kit: ihram, belt, care set, miswak and water bottle" loading="lazy"></div>
+      <div class="copy">
+        <span class="label">Packaging</span>
+        <h2>What's in the box</h2>
+        <p class="body">Packed in the order you will use it, with the checklist on top.</p>
+        <ul class="ticks">
+          <li>Trip checklist</li>
+          <li>Ihram or abaya in its reusable pouch</li>
+          <li>Care set and belt</li>
+          <li>Printed guide and dua booklet</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="secHead"><div><div class="label">Questions</div><h2>Kit FAQs</h2></div></div>
+      <div class="acc">
+        <details><summary>Can I change items after ordering?</summary><p>Yes, until your order is packed. Contact us on WhatsApp with your order number and we will update it. Final policy to be confirmed.</p></details>
+        <details><summary>Can I send the kit to someone else?</summary><p>Yes. Enter their address at checkout and select gift wrap to add a note and hide prices on the packing slip.</p></details>
+        <details><summary>Do you offer kits for groups?</summary><p>Yes. Umrah agencies, group leaders and community organisations can request co-branded kits and group pricing. See <a href="groups.html">Groups and agencies</a>.</p></details>
+        <details><summary>What if it does not arrive before I travel?</summary><p>The expected arrival date is shown before you pay and checked against your travel date. If an order arrives after you have travelled, you may return it unopened for a refund. Final policy to be confirmed.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="wm fWm" href="index.html" aria-label="nūrah home">n<span class="u">u</span>rah</a>
+    <div class="fGrid">
+      <div><b>Shop</b><a href="ihram.html">Men's ihram</a><a href="women.html">Women's essentials</a><a href="accessories.html">Accessories</a><a href="kits.html">Kits &amp; gifts</a><a href="kit-builder.html">Build your kit</a></div>
+      <div><b>Prepare</b><a href="guides.html">Guide hub</a><a href="guide-what-to-pack.html">Packing checklist</a><a href="guide-miqat-on-a-flight.html">Miqat on a flight</a><a href="compare.html">Compare fabrics</a></div>
+      <div><b>Help</b><a href="bag.html#delivery">Delivery</a><a href="bag.html#delivery">Returns</a><a href="ihram.html#size">Size guide</a><a href="index.html#faq">FAQs</a><a href="#">Contact (WhatsApp)</a></div>
+      <div><b>Company</b><a href="about.html">Our approach</a><a href="about.html#review">Content review</a><a href="groups.html">Groups &amp; agencies</a><a href="process.html">Design process board</a></div>
+      <form class="signup" data-signup><b>Trip reminders</b><p>A short checklist two weeks and two days before you travel.</p><div><input type="email" required placeholder="Email address" aria-label="Email address"><button class="btn sm" type="submit">Subscribe</button></div></form>
+    </div>
+    <p class="fine">Prototype for internal review only. Prices, specifications and policies are placeholders. Photography, video and artwork are client references and unlicensed stock previews, used for concept review; none of it is cleared for publication. Illustrations are generated in the browser from client reference photographs.</p>
+  </div>
+</footer>
+
+<script src="assets/site.js"></script>
+<script>
+(function () {
+  "use strict";
+  var N = window.NURAH, P = N.products, aed = N.aed;
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { var d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
+
+  var FABRICS = ["everyday", "air", "soft", "reserve"], ABAYAS = ["abayaStone", "abayaBlack", "jilbab"];
+  // per: "man" = one per man or boy (at least one in the kit); "men" = one per man; "women" = one per woman; otherwise one per kit
+  var ESS = [
+    { k: "belt", why: "Keeps passport, phone and cards secure", per: "man" },
+    { k: "care", why: "Fragrance-free body wash, shampoo and deodorant", per: "men" },
+    { k: "careWomen", why: "Fragrance-free body wash and deodorant", per: "women" },
+    { k: "mat", why: "Lightweight; folds into its own pouch" },
+    { k: "umbrella", why: "Shade for long days outdoors" },
+    { k: "bottle", why: "500 ml, for long days at the Haram" },
+    { k: "miswak", why: "Plain and unflavoured, individually sealed" },
+    { k: "lipbalm", why: "Unscented and unflavoured, for dry air" },
+    { k: "tasbih", why: "Thirty-three wooden beads with a tassel" }
+  ];
+  var S = { who: "man", fam: { m: 2, w: 2 }, fabric: "air", len: "Regular", abaya: "abayaStone", hijab: true,
+            ess: { belt: true, care: true, careWomen: true }, gift: false, hide: false };
+
+  function counts() {
+    if (S.who === "woman") return { m: 0, w: 1 };
+    if (S.who === "couple") return { m: 1, w: 1 };
+    if (S.who === "family") return { m: S.fam.m, w: S.fam.w };
+    return { m: 1, w: 0 };
+  }
+  function essQty(e, c) {
+    if (e.per === "man") return Math.max(c.m, 1);
+    if (e.per === "men") return c.m;
+    if (e.per === "women") return c.w;
+    return 1;
+  }
+
+  // ---------- option cards ----------
+  function optHTML(name, k, checked, extra) {
+    var p = P[k];
+    return '<label class="opt"><input type="radio" name="' + name + '" value="' + k + '"' + (checked ? " checked" : "") + '>' +
+      '<div class="ph"><img src="' + p.img + '" alt="" loading="lazy"></div><b>' + esc(extra || p.name) + '</b><span>' + esc(p.desc) + '</span><span class="pr">' + aed(p.price) + '</span></label>';
+  }
+  $("fabricOpts").innerHTML = FABRICS.map(function (k) { return optHTML("fabric", k, k === S.fabric, P[k].name.replace(" Ihram", "")); }).join("");
+  $("abayaOpts").innerHTML = ABAYAS.map(function (k) { return optHTML("abaya", k, k === S.abaya); }).join("");
+  $("hijabPrice").textContent = "+ " + aed(P.hijab.price);
+  $("fabricOpts").addEventListener("change", function (e) { S.fabric = e.target.value; update(); });
+  $("abayaOpts").addEventListener("change", function (e) { S.abaya = e.target.value; update(); });
+  $("hijab").addEventListener("change", function () { S.hijab = this.checked; update(); });
+
+  // ---------- step 1: who ----------
+  function setWho(w) {
+    S.who = w;
+    [].forEach.call(document.querySelectorAll("#who .chip"), function (b) { b.setAttribute("aria-pressed", b.dataset.who === w ? "true" : "false"); });
+    if (w === "gift") { S.gift = true; S.hide = true; $("giftWrap").checked = true; $("hidePrices").checked = true; }
+    // the ihram belt is worn over the men's izar: not pre-selected for a woman-only kit, restored when a man is added again
+    if (w === "woman" && S.ess.belt) { S.ess.belt = false; S.beltAuto = true; }
+    else if (w !== "woman" && S.beltAuto) { S.ess.belt = true; S.beltAuto = false; }
+    renderEss(); update();
+  }
+  $("who").addEventListener("click", function (e) { var b = e.target.closest("[data-who]"); if (b) setWho(b.dataset.who); });
+  document.querySelector(".fam").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-fam]"); if (!b) return;
+    var k = b.dataset.fam, o = k === "m" ? "w" : "m";
+    S.fam[k] = Math.max(0, Math.min(10, S.fam[k] + Number(b.dataset.d)));
+    if (S.fam.m + S.fam.w === 0) S.fam[o] = 1;
+    renderEss(); update();
+  });
+
+  // ---------- step 2: trip ----------
+  var today = new Date(); today.setHours(12, 0, 0, 0);
+  $("tDate").min = today.toISOString().slice(0, 10);
+  var saved = N.trip.get() || {};
+  if (saved.trip) $("tTrip").value = saved.trip;
+  if (saved.date) $("tDate").value = saved.date;
+  if (saved.from) $("tFrom").value = saved.from;
+  function saveTrip() {
+    var t = Object.assign({}, N.trip.get() || {}, { trip: $("tTrip").value, date: $("tDate").value, from: $("tFrom").value });
+    N.trip.set(t); update();
+  }
+  ["tTrip", "tDate", "tFrom"].forEach(function (id) { $(id).addEventListener("change", saveTrip); });
+
+  // ---------- step 3: length ----------
+  $("len").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-len]"); if (!b) return;
+    S.len = b.dataset.len;
+    [].forEach.call(this.querySelectorAll(".chip"), function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+    update();
+  });
+
+  // ---------- step 4: essentials ----------
+  function renderEss() {
+    var c = counts();
+    $("ess").innerHTML = ESS.filter(function (e) { return essQty(e, c) > 0; }).map(function (e) {
+      var p = P[e.k], q = essQty(e, c);
+      return '<label class="erow"><input type="checkbox" data-ess="' + e.k + '"' + (S.ess[e.k] ? " checked" : "") + '>' +
+        '<span class="ph"><img src="' + p.img + '" alt="" loading="lazy"></span>' +
+        '<span><b>' + esc(p.name) + '</b><small>' + esc(e.why) + '</small></span>' +
+        '<span class="pr">' + aed(p.price * q) + (q > 1 ? '<em>' + q + ' × ' + aed(p.price) + '</em>' : '') + '</span></label>';
+    }).join("");
+  }
+  $("ess").addEventListener("change", function (e) { var k = e.target.dataset.ess; if (k) { S.ess[k] = e.target.checked; update(); } });
+
+  // ---------- step 5: touches ----------
+  $("giftWrap").addEventListener("change", function () { S.gift = this.checked; update(); });
+  $("hidePrices").addEventListener("change", function () { S.hide = this.checked; });
+
+  // ---------- kit lines and totals ----------
+  function lines() {
+    var c = counts(), L = [];
+    if (c.m) L.push({ key: S.fabric, qty: c.m, name: P[S.fabric].name + " (" + S.len + ")", price: P[S.fabric].price });
+    if (c.w) {
+      L.push({ key: S.abaya, qty: c.w, name: P[S.abaya].name, price: P[S.abaya].price });
+      if (S.hijab) L.push({ key: "hijab", qty: c.w, name: P.hijab.name, price: P.hijab.price });
+    }
+    var essN = 0;
+    ESS.forEach(function (e) {
+      var q = essQty(e, c);
+      if (q > 0 && S.ess[e.k]) { essN++; L.push({ key: e.k, qty: q, name: P[e.k].name, price: P[e.k].price }); }
+    });
+    var sub = L.reduce(function (t, l) { return t + l.price * l.qty; }, 0);
+    var hasMain = c.m > 0 || c.w > 0, real = hasMain && essN >= 3;
+    var save = real ? Math.round(sub * 0.1) : 0;
+    return { c: c, items: L, essN: essN, sub: sub, save: save, total: sub - save };
+  }
+
+  function deliveryCheck() {
+    var a = N.arrival(), t = $("tDate").value, el = $("sCheck"), fa = N.fmtDate(a);
+    if (!t) { el.className = "check"; el.innerHTML = "<b>Arrives " + fa + "</b><span class='small'>Next-day UAE delivery when ordered before 2pm. Add your travel date to check the timing.</span>"; return; }
+    var d = N.daysBetween(a, t + "T12:00:00"), ft = N.fmtDate(t + "T12:00:00");
+    if (d >= 2) { el.className = "check ok"; el.innerHTML = "<b>Arrives " + fa + "</b><span class='small'>" + d + " days before your flight on " + ft + ".</span>"; }
+    else if (d === 1) { el.className = "check warn"; el.innerHTML = "<b>Arrives " + fa + ", one day before your flight</b><span class='small'>Order before 2pm, or contact us on WhatsApp and we will advise on timing.</span>"; }
+    else if (d === 0) { el.className = "check warn"; el.innerHTML = "<b>Arrives on the day of your flight</b><span class='small'>Please contact us on WhatsApp before ordering.</span>"; }
+    else { el.className = "check warn"; el.innerHTML = "<b>Your travel date is before the earliest delivery</b><span class='small'>The earliest arrival is " + fa + ". Please check the date or contact us on WhatsApp.</span>"; }
+  }
+
+  function update() {
+    var c = counts();
+    $("fam").hidden = S.who !== "family";
+    $("famM").textContent = S.fam.m; $("famW").textContent = S.fam.w;
+    [].forEach.call(document.querySelectorAll("[data-fam]"), function (b) {
+      var k = b.dataset.fam, o = k === "m" ? "w" : "m", d = Number(b.dataset.d);
+      b.disabled = d < 0 ? (S.fam[k] === 0 || S.fam[k] + S.fam[o] <= 1) : S.fam[k] >= 10;
+    });
+    $("ihramBlock").hidden = !c.m; $("abayaBlock").hidden = !c.w;
+    var both = c.m && c.w;
+    $("ihramLabel").hidden = !both; $("abayaLabel").hidden = !both;
+    $("s3title").textContent = both ? "Choose ihram and abaya" : (c.w ? "Choose your abaya" : "Choose your ihram fabric");
+    $("noteField").hidden = !S.gift;
+
+    var r = lines();
+    var html = r.items.map(function (l) { return "<li><span>" + (l.qty > 1 ? l.qty + " × " : "") + esc(l.name) + "</span><span>" + aed(l.price * l.qty) + "</span></li>"; }).join("");
+    html += '<li class="incl"><span>Printed guide and dua booklet</span><span>Included</span></li>';
+    if (S.gift) html += '<li class="incl"><span>Gift wrap and note</span><span>Complimentary</span></li>';
+    $("lines").innerHTML = html;
+    $("sSub").textContent = aed(r.sub);
+    $("sSaveRow").hidden = !r.save; $("sSave").textContent = "− " + aed(r.save);
+    var need = 3 - r.essN;
+    $("sRule").textContent = r.save ? "Saving applied: your kit includes an ihram or abaya and at least three essentials."
+      : (need > 0 ? "Add " + need + " more essential" + (need > 1 ? "s" : "") + " to save 10%. The saving applies when a kit includes an ihram or abaya and at least three essentials." : "Save 10% when your kit includes an ihram or abaya and at least three essentials.");
+    $("sTotal").textContent = aed(r.total); $("mTotal").textContent = aed(r.total);
+    deliveryCheck();
+  }
+
+  // ---------- add to bag ----------
+  function addKit() {
+    var r = lines(), c = r.c;
+    var parts = r.items.map(function (l) { return (l.qty > 1 ? l.qty + " × " : "") + l.name; });
+    var variant = parts.slice(0, 4).join(", ") + (parts.length > 4 ? " and " + (parts.length - 4) + " more" : "");
+    if (S.gift) variant += " · Gift wrap" + ($("giftNote").value.trim() ? " and note" : "");
+    if (S.hide) variant += " · Prices hidden on slip";
+    var name = $("tTrip").value === "Hajj" ? "Your Hajj kit" : "Your Umrah kit";
+    N.bag.add({ id: "custom-kit-" + Date.now(), name: name, variant: variant, price: r.total, img: c.m ? P[S.fabric].img : P[S.abaya].img });
+    $("added").hidden = false;
+  }
+  $("addKit").addEventListener("click", addKit);
+  $("mAdd").addEventListener("click", addKit);
+
+  // mobile total bar: hidden while the summary is on screen
+  var bar = $("mobBar");
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { bar.classList.toggle("hide", es[0].isIntersecting); }, { threshold: 0.15 }).observe($("summary"));
+
+  // prefill from the trip bar on the home page (Man / Woman / Family)
+  var asMap = { Man: "man", Woman: "woman", Family: "family" };
+  var params = new URLSearchParams(location.search);
+  var startWho = params.get("who") || asMap[saved.as] || "man";
+  if (["man", "woman", "couple", "family", "gift"].indexOf(startWho) < 0) startWho = "man";
+  setWho(startWho);
+})();
+</script>
+</body>
+</html>
