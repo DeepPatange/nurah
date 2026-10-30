@@ -15,9 +15,9 @@ A clickable concept prototype for nūrah, a Hajj and Umrah essentials brand star
 
 Shared code lives in `assets/`: `site.js` holds the product catalogue and the bag, which is stored in `localStorage`. The brush-stroke painting engine is in `paint/`.
 
-## What is not included
+## Images
 
-This repository holds the code only. Images, video and reference material are kept out because the stock photography is not yet licensed and the reference material belongs to the client. Without them, pages show empty image slots. Two data files are excluded for the same reason: `paint/sources.js` (the photos the painter works from) and `process/data.js` (the process board content).
+All images are in `media/`. They are placeholders for the concept: stock previews, reference photos and retailer product shots. None of them is licensed for use beyond this prototype, and all must be licensed or replaced with original photography before anything is published. `paint/sources.js` holds the photos the painting engine works from.
 
 ## Run it
 
