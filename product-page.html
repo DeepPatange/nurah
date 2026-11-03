@@ -14,7 +14,8 @@
   --display: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   --arabic: "IBM Plex Sans Arabic", "Geeza Pro", sans-serif;
-  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --gutter: clamp(16px, 4vw, 56px); /* page margin: 16px on phones, up to 56px on desktop */
+  --bronze-text: #8A5A26; /* bronze for small text: 5.6:1 on white (AA) */
   --header: 64px; --bar: 34px;
   color-scheme: light;
 }
@@ -25,7 +26,12 @@ img { max-width: 100%; display: block; }
 button, input { font: inherit; color: inherit; }
 a { color: inherit; }
 .label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.wrap { max-width: 1440px; margin: 0 auto; padding-left: var(--gutter); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1440px; margin: 0 auto; padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
+/* optical alignment and wrapping (same rules as assets/site.css) */
+h1, h2 { margin-inline-start: -.03em; }
+.wm { margin-inline-start: -.05em; }
+p, li, dd, figcaption { text-wrap: pretty; }
+b, strong { font-weight: 500; }
 
 /* announcement + header */
 .announce { min-height: var(--bar); background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; text-align: center; padding: 6px 16px; }
@@ -61,14 +67,14 @@ header.site.show-atc nav.main { display: none; }
 .slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .35s ease; }
 .slide.on { opacity: 1; z-index: 1; }
 .slide img, .slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
-.stageWrap .note { position: absolute; z-index: 3; left: 14px; bottom: 14px; max-width: calc(100% - 96px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: rgba(20,20,20,.62); color: #fff; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 5px 8px; }
+.stageWrap .note { position: absolute; z-index: 3; left: 14px; bottom: 14px; max-width: calc(100% - 96px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: rgba(20,20,20,.62); color: #fff; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; padding: 5px 8px; }
 .stageWrap .badge { position: absolute; z-index: 3; left: 14px; top: 14px; background: #fff; font-size: 12px; padding: 4px 10px; border-radius: 100px; }
 .stageWrap .count { position: absolute; z-index: 3; right: 14px; bottom: 14px; background: #fff; font-family: var(--mono); font-size: 11px; padding: 4px 9px; border-radius: 100px; display: none; }
 
 .buy { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding-top: 2px; }
 .crumb { font-size: 12px; color: var(--muted); }
 .crumb a { text-decoration: none; }
-h1 { font-weight: 400; font-size: clamp(30px, 3vw, 42px); letter-spacing: -.035em; line-height: 1.02; margin: 0; }
+h1 { font-weight: 400; font-size: clamp(30px, 3vw, 42px); letter-spacing: -.035em; line-height: 1.02; margin-block: 0; margin-inline-end: 0; }
 .sub { color: var(--muted); margin: 2px 0 0; }
 .priceRow { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .price { font-size: 24px; letter-spacing: -.02em; }
@@ -82,7 +88,7 @@ h1 { font-weight: 400; font-size: clamp(30px, 3vw, 42px); letter-spacing: -.035e
 .fabrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .fab { border: 1px solid var(--line); background: #fff; text-align: left; padding: 10px 10px 9px; cursor: pointer; display: grid; gap: 2px; border-radius: 4px; }
 .fab b { font-weight: 500; font-size: 14px; }
-.fab span { font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+.fab span { font-size: 12px; color: var(--muted); line-height: 1.3; }
 .fab em { font-style: normal; font-size: 12px; }
 .fab[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
 .fab[aria-pressed="true"] b::after { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--bronze); margin-left: 6px; vertical-align: middle; }
@@ -92,33 +98,33 @@ h1 { font-weight: 400; font-size: clamp(30px, 3vw, 42px); letter-spacing: -.035e
 .ctaRow { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 10px; }
 .qty { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--line); border-radius: 100px; padding: 0 6px; }
 .qty button { width: 32px; height: 32px; border: 0; background: none; cursor: pointer; font-size: 18px; }
-.btn { height: 50px; border-radius: 100px; border: 1px solid var(--ink); background: var(--ink); color: #fff; font-weight: 500; cursor: pointer; font-size: 15px; }
+.btn { height: 48px; border-radius: 100px; border: 1px solid var(--ink); background: var(--ink); color: #fff; font-weight: 500; cursor: pointer; font-size: 15px; }
 .btn:hover { background: #000; }
 .btn.alt { background: #fff; color: var(--ink); }
 .btn.alt:hover { background: var(--soft); }
 .express { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.express .btn { height: 44px; font-size: 14px; }
-.delivery { border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; display: grid; gap: 6px; }
+.express .btn { height: 48px; font-size: 14px; }
+.delivery { border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; display: grid; gap: 6px; }
 .delivery .line1 { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 14px; }
 .delivery .line1 b { font-weight: 500; }
 .delivery .ok { color: var(--ok); }
 .delivery label { font-size: 12px; color: var(--muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.delivery input { border: 1px solid var(--line); border-radius: 4px; padding: 4px 8px; font-size: 12px; }
-.bundle { display: flex; gap: 12px; align-items: flex-start; border: 1px dashed #CFCFCF; border-radius: 6px; padding: 11px 14px; cursor: pointer; }
+.delivery input { height: 36px; border: 1px solid var(--line); border-radius: 4px; padding: 0 10px; font-size: 13px; }
+.bundle { display: flex; gap: 12px; align-items: flex-start; border: 1px dashed #CFCFCF; border-radius: 4px; padding: 11px 14px; cursor: pointer; }
 .bundle input { margin-top: 3px; accent-color: var(--ink); }
 .bundle div { font-size: 13px; }
 .bundle b { font-weight: 500; }
-.bundle .save { color: var(--bronze); }
+.bundle .save { color: var(--bronze-text); }
 .assure { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
-.assure b { display: block; color: var(--ink); font-weight: 500; font-size: 12.5px; }
+.assure b { display: block; color: var(--ink); font-weight: 500; font-size: 13px; }
 .pay { display: flex; gap: 6px; flex-wrap: wrap; }
-.pay span { font-size: 10.5px; border: 1px solid var(--line); border-radius: 4px; padding: 3px 7px; color: var(--muted); }
+.pay span { font-size: 11px; border: 1px solid var(--line); border-radius: 4px; padding: 3px 7px; color: var(--muted); }
 
 /* below the fold */
-section.band { padding-block: clamp(56px, 8vw, 104px); }
+section.band { padding-block: clamp(56px, 8vw, 112px); }
 section.band.alt { background: var(--soft); }
 .secHead { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
-h2 { font-weight: 400; font-size: clamp(28px, 3.2vw, 44px); letter-spacing: -.035em; line-height: 1.05; margin: 0; text-wrap: balance; }
+h2 { font-weight: 400; font-size: clamp(28px, 3.2vw, 44px); letter-spacing: -.035em; line-height: 1.05; margin-block: 0; margin-inline-end: 0; text-wrap: balance; }
 .secHead p { margin: 8px 0 0; color: var(--muted); max-width: 56ch; }
 .feel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin-bottom: 44px; }
 .scale b { font-weight: 500; display: block; margin-bottom: 10px; }
@@ -126,7 +132,7 @@ h2 { font-weight: 400; font-size: clamp(28px, 3.2vw, 44px); letter-spacing: -.03
 .track i { height: 6px; border-radius: 3px; background: #E2E2E2; }
 .track i.on { background: var(--ink); }
 .ends { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 8px; }
-.tableWrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+.tableWrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; background: #fff; }
 table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; }
 th, td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
 thead th { font-weight: 500; background: #FAFAFA; }
@@ -140,7 +146,7 @@ tr:last-child th, tr:last-child td { border-bottom: 0; }
 .stock .img { aspect-ratio: 4 / 5; background: #EDEDED; position: relative; overflow: hidden; }
 .stock .img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
 .stock .img.missing img { display: none; }
-.stock .img.missing::after, .thumb.missing::after { content: attr(data-missing); position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 16px; font-family: var(--mono); font-size: 10.5px; line-height: 1.5; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.stock .img.missing::after, .thumb.missing::after { content: attr(data-missing); position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 16px; font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .thumb.missing { position: relative; } .thumb.missing img { display: none; } .thumb.missing::after { font-size: 7.5px; padding: 4px; }
 .stock figcaption { display: grid; gap: 4px; }
 .stock figcaption b { font-weight: 500; }
@@ -154,14 +160,14 @@ tr:last-child th, tr:last-child td { border-bottom: 0; }
 .paintCopy .steps { display: grid; gap: 10px; margin-top: 6px; }
 .paintCopy .steps div { display: flex; gap: 12px; align-items: baseline; opacity: .28; transition: opacity .4s ease; }
 .paintCopy .steps div.on { opacity: 1; }
-.paintCopy .steps span { font-family: var(--mono); font-size: 11px; color: var(--bronze); }
+.paintCopy .steps span { font-family: var(--mono); font-size: 11px; color: var(--bronze-text); }
 .canvasBox { position: relative; height: 82%; }
 .canvasBox canvas, .canvasBox > img { width: 100%; height: 100%; display: block; object-fit: cover; }
 .photoBox { background: var(--soft); }
 .card .ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; }
 .card .ph { overflow: hidden; }
-.canvasBox .note { position: absolute; left: 0; bottom: -26px; max-width: calc(100% - 128px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-.canvasBox .replay { position: absolute; right: 0; bottom: -30px; border: 0; background: none; padding: 4px 0; font-size: 12px; color: var(--muted); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.canvasBox .note { position: absolute; left: 0; bottom: -26px; max-width: calc(100% - 128px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.canvasBox .replay { position: absolute; right: 0; bottom: -30px; border: 0; background: none; padding: 4px 0; font-size: 12px; color: var(--muted); cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
 .canvasBox .replay:hover { color: var(--ink); }
 .reveal2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: center; }
 .reveal2 .canvasBox, .contents .canvasBox { height: auto; aspect-ratio: 4 / 5; max-height: calc(100vh - var(--header) - 72px); }
@@ -169,16 +175,18 @@ tr:last-child th, tr:last-child td { border-bottom: 0; }
 .contents .box { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 24px; }
 
 .box { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
-.box div { border-top: 1px solid var(--ink); padding-top: 14px; display: grid; gap: 6px; }
-.box span { font-family: var(--mono); font-size: 11px; color: var(--bronze); }
+.box div { border-top: 1px solid var(--ink); padding-top: 16px; display: grid; gap: 6px; align-content: start; }
+.box span { font-family: var(--mono); font-size: 11px; color: var(--bronze-text); }
 .box p { margin: 0; color: var(--muted); font-size: 14px; }
 .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-.card { display: grid; gap: 10px; }
-.card .ph { aspect-ratio: 4 / 3; background: #fff; border: 1px solid var(--line); display: grid; place-items: center; }
+.card { display: grid; gap: 10px; align-content: start; }
+.card .ph { aspect-ratio: 4 / 3; background: var(--soft); border: 0; display: grid; place-items: center; }
+.card .ph img { mix-blend-mode: multiply; }
 .card .ph svg { width: 34%; height: auto; }
 .card .meta { display: flex; justify-content: space-between; gap: 12px; }
 .card .meta span { color: var(--muted); font-size: 13px; }
-.card button { height: 40px; border-radius: 100px; border: 1px solid var(--ink); background: #fff; cursor: pointer; font-size: 13px; }
+.card button { justify-self: start; height: 40px; padding: 0 20px; margin-top: 6px; border-radius: 100px; border: 1px solid var(--ink); background: #fff; cursor: pointer; font-size: 13px; }
+.card button:hover { background: var(--ink); color: #fff; }
 .faq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 48px; }
 details { border-top: 1px solid var(--line); padding: 16px 0; }
 details:last-child { border-bottom: 1px solid var(--line); }
@@ -187,7 +195,7 @@ summary::-webkit-details-marker { display: none; }
 summary::after { content: "+"; font-size: 20px; line-height: 1; }
 details[open] summary::after { content: "−"; }
 details p { color: var(--muted); margin: 10px 0 0; max-width: 62ch; }
-.reviews { border: 1px dashed #CFCFCF; border-radius: 6px; padding: 22px; color: var(--muted); }
+.reviews { border: 1px dashed #CFCFCF; border-radius: 4px; padding: 22px; color: var(--muted); }
 footer { border-top: 1px solid var(--line); padding-block: 48px 96px; }
 footer .cols { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 32px; font-size: 14px; }
 footer .cols div { display: grid; gap: 8px; align-content: start; }
@@ -201,8 +209,8 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
 .stickyBar .in { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 1440px; margin: 0 auto; }
 .stickyBar .t { font-size: 14px; }
 .stickyBar .t span { display: block; font-size: 12px; color: var(--muted); }
-.stickyBar .btn { height: 46px; padding: 0 26px; }
-.toast { position: fixed; top: calc(var(--header) + var(--bar) + 12px); right: 16px; z-index: 50; background: var(--ink); color: #fff; padding: 12px 16px; border-radius: 6px; font-size: 14px; opacity: 0; transform: translateY(-8px); transition: all .25s ease; pointer-events: none; }
+.stickyBar .btn { height: 48px; padding: 0 24px; }
+.toast { position: fixed; top: calc(var(--header) + var(--bar) + 12px); right: 16px; z-index: 50; background: var(--ink); color: #fff; padding: 12px 16px; border-radius: 4px; font-size: 14px; opacity: 0; transform: translateY(-8px); transition: all .25s ease; pointer-events: none; }
 .toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
 .toast a { color: #fff; margin-left: 10px; }
 :focus-visible { outline: 2px solid var(--bronze); outline-offset: 2px; }
@@ -342,7 +350,7 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
   <!-- FABRIC CHARACTERISTICS + COMPARISON -->
   <section class="band alt" id="compare">
     <div class="wrap">
-      <div class="secHead"><div><div class="label">Fabric</div><h2>Fabric characteristics</h2><p>How Air compares across the range. Values are indicative and will be confirmed through supplier sampling.</p></div></div>
+      <div class="secHead"><div><h2>Fabric characteristics</h2><p>How Air compares across the range. Values are indicative and will be confirmed through supplier sampling.</p></div></div>
       <div class="feel">
         <div class="scale"><b>Weight</b><div class="track"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div><div class="ends"><span>Lighter</span><span>Heavier</span></div></div>
         <div class="scale"><b>Softness</b><div class="track"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div><div class="ends"><span>Crisp</span><span>Plush</span></div></div>
@@ -366,7 +374,7 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
   <!-- WORN ON THE JOURNEY: licensed stock photography -->
   <section class="band" id="worn">
     <div class="wrap">
-      <div class="secHead"><div><div class="label">On the journey</div><h2>Worn on the journey</h2><p>Two unstitched pieces, designed for long days of walking in warm weather.</p></div></div>
+      <div class="secHead"><div><h2>Worn on the journey</h2><p>Two unstitched pieces, designed for long days of walking in warm weather.</p></div></div>
       <div class="stock">
         <figure><div class="img" data-missing="Licensed photo · RMC 71157 · add to /stock"><img src="media/stock/rmc-71157.jpg" alt="Pilgrim wearing a two-piece white ihram, hands raised in dua" loading="lazy" onerror="this.parentElement.classList.add('missing')"></div><figcaption><b>Izar and rida</b><span>Two unstitched pieces: the izar is wrapped at the waist and the rida is worn over the shoulders.</span></figcaption></figure>
         <figure><div class="img" data-missing="Licensed photo · RMC 76393 · add to /stock"><img src="media/stock/rmc-76393.jpg" alt="Pilgrim in ihram with a white sun umbrella" loading="lazy" onerror="this.parentElement.classList.add('missing')"></div><figcaption><b>Made for warm climates</b><span>Air uses a lighter, open weave for heat and long walks.</span></figcaption></figure>
@@ -379,7 +387,6 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
   <section class="paintScene" id="scene1" aria-label="Preparation story">
     <div class="wrap paintSticky">
       <div class="paintCopy">
-        <div class="label">Preparation</div>
         <h2>Prepared before you travel</h2>
         <p>Every order arrives with what you need for the journey ahead, packed in the order you will use it.</p>
         <div class="steps" id="steps1">
@@ -404,7 +411,7 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
         <span class="note">Client reference</span>
       </div>
       <div>
-      <div class="secHead"><div><div class="label">Contents</div><h2>What's in the box</h2><p>Everything required for ihram, packed in the order it will be used.</p></div></div>
+      <div class="secHead"><div><h2>What's in the box</h2><p>Everything required for ihram, packed in the order it will be used.</p></div></div>
       <div class="box">
         <div><span>01</span><b>Izar and rida</b><p>Two unstitched pieces: lower cloth 115 × 230 cm and upper cloth 115 × 230 cm (to be confirmed).</p></div>
         <div><span>02</span><b>Cotton pouch</b><p>Reusable drawstring pouch for storage and travel.</p></div>
@@ -446,7 +453,7 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
   <section class="band alt" id="faq">
     <div class="wrap faq">
       <div style="display:grid;gap:16px;align-content:start">
-        <div class="label">Details</div><h2>Product information</h2>
+        <h2>Product information</h2>
         <div class="reviews">Customer reviews are displayed from verified purchases only and will appear after launch.</div>
       </div>
       <div>

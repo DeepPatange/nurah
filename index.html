@@ -26,9 +26,11 @@
 /* hero · living painting */
 .heroH { height: clamp(620px, calc(100vh - var(--header) - var(--bar)), 980px); }
 .hero.b { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: stretch; }
-.hero.b .copy { display: grid; gap: 22px; align-content: center; padding: 40px 48px 40px max(var(--gutter), calc((100vw - 1440px) / 2 + 16px)); }
+.hero.b .copy { display: grid; gap: 20px; align-content: center; padding: 40px 48px 40px max(var(--gutter), calc((100vw - 1440px) / 2 + var(--gutter))); }
 .hero.b h1 { font-size: clamp(40px, 4.8vw, 76px); }
-.hero.b .lead { font-size: 17px; color: var(--muted); max-width: 46ch; }
+.hero.b .lead { font-size: 18px; color: var(--muted); max-width: 46ch; }
+.hero.b .copy > .label + h1 { margin-top: -6px; }
+.hero.b .copy > .ctas { margin-top: 10px; }
 .hero.b .paintBox { height: 100%; }
 .hero.b .paintBox .note { left: auto; right: 16px; bottom: 14px; max-width: none; background: rgba(255,255,255,.88); padding: 3px 8px; }
 .hero.b .paintBox .replay { right: 16px; left: auto; top: 14px; bottom: auto; background: rgba(255,255,255,.88); padding: 3px 12px; border-radius: 100px; }
@@ -37,32 +39,33 @@
 .split.portrait { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
 .split.portrait > .img { aspect-ratio: 4 / 5; }
 .split.reverse.portrait { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); }
-.split.contents > .img { background: #fff; border: 1px solid #EEEEEE; }
-.catGrid .img { background: #fff; border: 1px solid #EEEEEE; }
+.split.contents > .img { background: var(--soft); border: 0; }
+.split.contents > .img img, .catGrid .img img { mix-blend-mode: multiply; }
+.catGrid .img { background: var(--soft); border: 0; }
 
 /* fabric picker */
 .fabricPick { display: grid; gap: 14px; padding: 18px 0 4px; border-top: 1px solid var(--line); }
 .fabricPick .line { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
-.fabricPick b { font-weight: 500; font-size: 17px; }
+.fabricPick b { font-weight: 500; font-size: 18px; }
 .fabricPick .line span { font-size: 15px; }
-.fabricPick p { color: var(--muted); font-size: 14.5px; max-width: 48ch; }
+.fabricPick p { color: var(--muted); font-size: 15px; max-width: 48ch; }
 .fabricPick a { font-size: 14px; text-underline-offset: 4px; }
 
 /* numbered list */
 .numList { list-style: none; padding: 0; margin: 0; display: grid; }
 .numList li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px; padding: 18px 0; border-top: 1px solid var(--line); }
 .numList li:last-child { border-bottom: 1px solid var(--line); }
-.numList span { font-family: var(--mono); font-size: 11px; color: var(--bronze); padding-top: 4px; }
+.numList span { font-family: var(--mono); font-size: 11px; color: var(--bronze-text); padding-top: 4px; }
 .numList b { font-weight: 500; font-size: 16px; display: block; }
 .numList p { color: var(--muted); font-size: 14px; margin-top: 4px; }
 
 .tripMsg { line-height: 1.55; }
 .tripMsg b { font-weight: 500; }
 .tripMsg .warn { color: #8A3B12; }
-.tripMsg a { margin-right: 14px; text-underline-offset: 3px; }
+.tripMsg a { margin-right: 14px; text-underline-offset: 4px; }
 .faqWrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 48px; }
 .faqWrap .note { font-size: 13px; color: var(--muted); margin-top: 14px; max-width: 40ch; }
-.acc a { color: var(--ink); text-underline-offset: 3px; }
+.acc a { color: var(--ink); text-underline-offset: 4px; }
 
 @media (max-width: 960px) {
   .heroH { height: auto; }
@@ -124,7 +127,7 @@
   <!-- 3 · SHOP BY CATEGORY -->
   <section class="band">
     <div class="wrap">
-      <div class="secHead"><div><div class="label">Shop</div><h2>Shop by category</h2></div></div>
+      <div class="secHead"><div><h2>Shop by category</h2></div></div>
       <div class="cardGrid catGrid" style="--cols:4; --ratio:4 / 5">
         <a class="card" href="ihram.html"><div class="img"><img src="media/products/ihram-air.jpg" alt="Air Ihram, worn" loading="lazy"></div><h3>Men's ihram</h3><p>Four fabrics, compared in detail.</p><span class="more">Shop ihram</span></a>
         <a class="card" href="women.html"><div class="img"><img src="media/products/abaya-grey.jpg" alt="Umrah abaya in stone" loading="lazy"></div><h3>Women's essentials</h3><p>Modest, breathable pieces. No uniform required.</p><span class="more">Shop women</span></a>
@@ -157,7 +160,7 @@
   <!-- 5 · UMRAH KITS -->
   <section class="band">
     <div class="wrap">
-      <div class="secHead"><div><div class="label">Kits</div><h2>Umrah kits</h2><p>Full contents are listed for every kit.</p></div><a class="link" href="kit-builder.html">Build your own</a></div>
+      <div class="secHead"><div><h2>Umrah kits</h2><p>Full contents are listed for every kit.</p></div><a class="link" href="kit-builder.html">Build your own</a></div>
       <div class="grid3" data-kind="kit" data-cards="kitFirst,kitWomen,kitCouple"></div>
     </div>
   </section>
@@ -165,7 +168,7 @@
   <!-- 6 · HOW IT WORKS -->
   <section class="band alt">
     <div class="wrap">
-      <div class="secHead"><div><div class="label">Ordering</div><h2>How it works</h2></div></div>
+      <div class="secHead"><div><h2>How it works</h2></div></div>
       <div class="stepGrid" style="--n:4">
         <div><span class="num">1</span><b>Tell us your trip</b><p>Add your travel date and who is travelling. This step is optional.</p></div>
         <div><span class="num">2</span><b>Choose your kit</b><p>Select a ready-made kit or individual items.</p></div>
@@ -180,7 +183,6 @@
     <div class="wrap split reverse portrait">
       <div class="img"><img src="media/illustrations/e59fa0c6ee2d92ede7607fe94cb274dd.jpg" alt="Client illustration: hands raised in prayer at the Kaaba" loading="lazy"></div>
       <div class="copy">
-        <span class="label">Prepare</span>
         <h2>Umrah preparation guide</h2>
         <p class="body">Plain-language guides to preparation, the miqat and packing, reviewed by a qualified scholar.</p>
         <ul class="ticks">
@@ -223,9 +225,9 @@
     <div class="wrap">
       <div class="secHead"><div><div class="label">Our commitments</div><h2>Why nūrah</h2></div><a class="link" href="about.html">Our approach</a></div>
       <div class="cardGrid" style="--cols:3">
-        <div class="card boxed"><span class="ico">01</span><h3>Verified materials</h3><p>Full specifications on every product: fabric, size, weight and care.</p></div>
-        <div class="card boxed"><span class="ico">02</span><h3>Reviewed guidance</h3><p>Religious content is checked by a qualified scholar before it is published.</p></div>
-        <div class="card boxed"><span class="ico">03</span><h3>Reliable delivery</h3><p>A clear arrival date, checked against your travel date.</p></div>
+        <div class="card boxed"><h3>Verified materials</h3><p>Full specifications on every product: fabric, size, weight and care.</p></div>
+        <div class="card boxed"><h3>Reviewed guidance</h3><p>Religious content is checked by a qualified scholar before it is published.</p></div>
+        <div class="card boxed"><h3>Reliable delivery</h3><p>A clear arrival date, checked against your travel date.</p></div>
       </div>
     </div>
   </section>
@@ -233,7 +235,7 @@
   <!-- 11 · FAQ -->
   <section class="band alt" id="faq">
     <div class="wrap faqWrap">
-      <div><div class="label">Questions</div><h2 style="margin-top:10px">Frequently asked questions</h2><p class="note">Answers are general guidance and are pending review by a qualified scholar. Follow official Nusuk guidance and ask your scholar about your own situation.</p></div>
+      <div><h2 style="margin-top:10px">Frequently asked questions</h2><p class="note">Answers are general guidance and are pending review by a qualified scholar. Follow official Nusuk guidance and ask your scholar about your own situation.</p></div>
       <div class="acc">
         <details><summary>Do women need to wear white?</summary><div>No. In the state of ihram, women wear ordinary modest clothing in any colour, provided it is loose and not sheer. Women do not wear a face veil (niqab) or gloves while in ihram. Our Umrah abayas are plain; decorated pieces are marked for after the journey. <a href="women.html">Women's essentials</a></div></details>
         <details><summary>When should I change into ihram if I am flying?</summary><div>Ihram is entered before crossing the miqat. On a flight the aircraft may cross the miqat well before landing, so many pilgrims change before boarding and make their intention before the miqat. Read <a href="guide-miqat-on-a-flight.html">Entering ihram on a flight</a>, and confirm the timing with your scholar and your airline.</div></details>

@@ -2,7 +2,7 @@
 .pHead { padding-bottom: 28px; }
 .catMini { padding-bottom: 40px; }
 .catMini .card.boxed { gap: 8px; }
-.catMini .card h3 { font-size: 17px; }
+.catMini .card h3 { font-size: 18px; }
 .catMini .card .price { color: var(--ink); margin-top: 2px; }
 .catMini .links { display: flex; gap: 6px 16px; flex-wrap: wrap; margin-top: 4px; }
 .catMini .links a { font-size: 14px; text-underline-offset: 4px; }
@@ -10,16 +10,18 @@
 .catMain { border-top: 1px solid var(--line); padding-top: 32px; padding-bottom: clamp(56px, 7vw, 96px); }
 .catGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 20px; }
 .catGrid[hidden] { display: none; }
-.filters .clear { border: 0; background: none; padding: 0; font-size: 13px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; justify-self: start; }
+.filters .clear { border: 0; background: none; padding: 0; font-size: 13px; color: var(--muted); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; justify-self: start; }
 .gridHead .right { display: flex; gap: 10px; align-items: center; }
 .filterToggle { display: none; }
 .noResults { display: grid; gap: 14px; justify-items: start; }
 .noResults[hidden] { display: none; }
 
 /* image + text split on these pages uses portrait product and stock photos */
-.split > .img.portrait { aspect-ratio: 4 / 5; width: 100%; max-width: 520px; justify-self: center; background: #fff; border: 1px solid #EEEEEE; }
+.split > .img.portrait { aspect-ratio: 4 / 5; width: 100%; max-width: 520px; justify-self: center; background: var(--soft); border: 0; }
+.split > .img.portrait img { mix-blend-mode: multiply; }
 .split .note { font-size: 13px; color: var(--muted); }
-.sizeTable { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid var(--line); }
+.sizeTable { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--soft); border: 0; }
+.split > .img.portrait img { mix-blend-mode: multiply; }
 .sizeTable th, .sizeTable td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .sizeTable thead th { font-weight: 500; background: #FAFAFA; }
 .sizeTable tbody th { font-weight: 500; }

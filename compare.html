@@ -15,19 +15,20 @@
 .qs { display: grid; gap: 26px; }
 .q { display: grid; gap: 12px; }
 .q b { font-weight: 500; font-size: 16px; }
-.q .n { font-family: var(--mono); font-size: 11px; color: var(--bronze); margin-right: 10px; }
+.q .n { font-family: var(--mono); font-size: 11px; color: var(--bronze-text); margin-right: 10px; }
 .result { display: grid; grid-template-columns: minmax(0, 200px) minmax(0, 1fr); gap: 24px; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 20px; }
-.result .ph { aspect-ratio: 4 / 5; border: 1px solid #EEEEEE; overflow: hidden; background: #fff; }
+.result .ph { aspect-ratio: 4 / 5; overflow: hidden; background: var(--soft); border: 0; }
+.result .ph img { mix-blend-mode: multiply; }
 .result .ph img { width: 100%; height: 100%; object-fit: cover; }
 .result .copy { display: grid; gap: 10px; align-content: center; }
 .result h3 { font-size: 24px; font-weight: 400; letter-spacing: -.02em; }
-.result p { color: var(--muted); font-size: 14.5px; }
+.result p { color: var(--muted); font-size: 15px; }
 .result .tip { font-size: 13px; color: var(--muted); border-left: 2px solid var(--bronze); padding-left: 10px; }
 .result .tip:empty { display: none; }
 .result .price { font-size: 16px; }
 
 /* comparison table */
-.tableWrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+.tableWrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; background: #fff; }
 .tableWrap table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; }
 .tableWrap th, .tableWrap td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .tableWrap thead th { font-weight: 500; background: #FAFAFA; }
@@ -100,7 +101,7 @@
   <!-- 3 · FABRIC COMPARISON -->
   <section class="band" id="table">
     <div class="wrap">
-      <div class="secHead"><div><div class="label">Side by side</div><h2>Fabric comparison</h2></div></div>
+      <div class="secHead"><div><h2>Fabric comparison</h2></div></div>
       <div class="tableWrap">
         <table>
           <thead><tr><th></th><th data-col="everyday">Everyday</th><th data-col="air">Air</th><th data-col="soft">Soft</th><th data-col="reserve">Reserve</th></tr></thead>
@@ -123,11 +124,11 @@
   <!-- 4 · NEED HELP CHOOSING? -->
   <section class="band alt">
     <div class="wrap">
-      <div class="secHead"><div><div class="label">Support</div><h2>Need help choosing?</h2></div></div>
+      <div class="secHead"><div><h2>Need help choosing?</h2></div></div>
       <div class="cardGrid" style="--cols:3">
-        <div class="card boxed"><span class="ico">01</span><h3>Talk to us</h3><p>WhatsApp support in Arabic and English.</p><a class="btn alt sm" href="#">Start a chat</a></div>
-        <div class="card boxed"><span class="ico">02</span><h3>Read the guides</h3><p>Plain-language guidance on what to wear and what to pack.</p><a class="btn alt sm" href="guides.html">Open the guides</a></div>
-        <div class="card boxed"><span class="ico">03</span><h3>Order a swatch card</h3><p>Feel all four fabrics before you buy.</p><button class="btn alt sm" type="button" id="swatch">Order a swatch card</button></div>
+        <div class="card boxed"><h3>Talk to us</h3><p>WhatsApp support in Arabic and English.</p><a class="btn alt sm" href="#">Start a chat</a></div>
+        <div class="card boxed"><h3>Read the guides</h3><p>Plain-language guidance on what to wear and what to pack.</p><a class="btn alt sm" href="guides.html">Open the guides</a></div>
+        <div class="card boxed"><h3>Order a swatch card</h3><p>Feel all four fabrics before you buy.</p><button class="btn alt sm" type="button" id="swatch">Order a swatch card</button></div>
       </div>
     </div>
   </section>
