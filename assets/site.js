@@ -110,6 +110,19 @@
   function fmtDate(d) { return new Date(d).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }); }
   function daysBetween(a, b) { var x = new Date(a), y = new Date(b); x.setHours(12, 0, 0, 0); y.setHours(12, 0, 0, 0); return Math.round((y - x) / 864e5); }
   window.NURAH.trip = { get: tripGet, set: tripSet };
+
+  // first-order offer (placeholder terms until confirmed): one code, applied in the bag
+  var OFFER = { code: "WELCOME10", pct: 10, text: "10% off your first order" }, CKEY = "nurah-coupon", memC = "";
+  function couponGet() { try { return localStorage.getItem(CKEY) || ""; } catch (e) { return memC; } }
+  function couponSet(c) { memC = c || ""; try { if (c) localStorage.setItem(CKEY, c); else localStorage.removeItem(CKEY); } catch (e) {} }
+  window.NURAH.offer = OFFER; window.NURAH.coupon = { get: couponGet, set: couponSet };
+  // any button with data-apply-code applies the offer and confirms it
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-apply-code]"); if (!b) return;
+    couponSet(OFFER.code); toast(OFFER.code + " applied: " + OFFER.pct + "% off comes off in your bag");
+    document.querySelectorAll("[data-apply-code]").forEach(function (x) { x.classList.add("applied"); x.setAttribute("aria-pressed", "true"); });
+  });
+  if (couponGet()) document.querySelectorAll("[data-apply-code]").forEach(function (x) { x.classList.add("applied"); x.setAttribute("aria-pressed", "true"); });
   window.NURAH.arrival = arrival; window.NURAH.fmtDate = fmtDate; window.NURAH.daysBetween = daysBetween;
 
   // footer trip reminders

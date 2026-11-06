@@ -10,6 +10,7 @@
   color-scheme: light;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; } /* hidden always wins over a component's own display */
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--display); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 img { max-width: 100%; display: block; }
@@ -65,7 +66,7 @@ section.band.alt { background: var(--soft); }
 .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 20px; }
 .pcard { display: grid; gap: 12px; align-content: start; text-decoration: none; position: relative; }
 .pcard .ph { aspect-ratio: 4 / 5; background: var(--soft); border: 0; overflow: hidden; position: relative; }
-.pcard .ph img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; transition: transform .6s ease; }
+.pcard .ph img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; transition: transform .6s ease; }
 .pcard:hover .ph img { transform: scale(1.03); }
 .pcard .tag { position: absolute; left: 12px; top: 12px; background: #fff; font-size: 12px; padding: 3px 9px; border-radius: 100px; }
 .pcard .row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
@@ -90,7 +91,7 @@ section.band.alt { background: var(--soft); }
 .icard p { color: var(--muted); font-size: 14px; }
 .icard.photo .ph { aspect-ratio: 4 / 5; background: var(--soft); border: 0; position: relative; overflow: hidden; }
 .icard.photo .tag { position: absolute; left: 12px; top: 12px; background: #fff; font-size: 12px; padding: 3px 9px; border-radius: 100px; }
-.icard.photo .ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; mix-blend-mode: multiply; }
+.icard.photo .ph img { width: 100%; height: 100%; object-fit: contain; object-position: 50% 50%; mix-blend-mode: multiply; }
 
 /* painted canvas */
 .paintBox { position: relative; }
@@ -142,7 +143,7 @@ footer .fine { margin-top: 40px; font-size: 12px; color: var(--muted); max-width
 .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 20px; }
 .kcard { display: grid; gap: 10px; align-content: start; }
 .kcard .ph { aspect-ratio: 4 / 5; background: var(--soft); border: 0; position: relative; overflow: hidden; }
-.kcard .ph img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; }
+.kcard .ph img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
 .kcard .tag { position: absolute; left: 12px; top: 12px; background: #fff; font-size: 12px; padding: 3px 9px; border-radius: 100px; }
 .kcard .row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
 .kcard .row b { font-weight: 500; font-size: 18px; }
@@ -175,6 +176,12 @@ footer .fine { margin-top: 40px; font-size: 12px; color: var(--muted); max-width
 .split.reverse > .img { order: 2; }
 .split > .img { aspect-ratio: 4 / 3; background: var(--soft); overflow: hidden; position: relative; }
 .split > .img img { width: 100%; height: 100%; object-fit: cover; }
+/* frames match the picture so nothing important is cut off:
+   portrait = 4:5 illustrations; people = 2:3 studio photographs, shown whole */
+.split.portrait { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+.split.reverse.portrait { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); }
+.split > .img.portrait, .split.portrait > .img { aspect-ratio: 4 / 5; }
+.split > .img.people { aspect-ratio: 2 / 3; width: min(100%, 460px); justify-self: center; }
 .split .copy { display: grid; gap: 18px; align-content: center; }
 .split .copy .body { color: var(--muted); font-size: 16px; max-width: 52ch; }
 /* grouping by distance: label close to its heading, extra room before buttons */
@@ -233,7 +240,7 @@ a.card.boxed:hover { border-color: var(--ink); }
 
 /* trip bar */
 .tripBar { background: var(--soft); border-block: 1px solid var(--line); }
-.tripBar form { display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(0, 1fr)) auto; gap: 16px 20px; align-items: end; padding-block: 26px; }
+.tripBar form { display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(0, 1fr)) auto; gap: 16px 20px; align-items: end; padding-block: 20px; }
 .tripBar h2 { font-size: 24px; letter-spacing: -.02em; }
 .tripBar p { color: var(--muted); font-size: 14px; margin-top: 4px; }
 .tripMsg { grid-column: 1 / -1; font-size: 14px; }
@@ -270,6 +277,7 @@ footer .fWm { display: inline-block; font-size: clamp(64px, 10vw, 140px); margin
   .tools .cur { display: none; }
   .split { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .split.reverse > .img { order: 0; }
+  .split > .img.people { width: min(100%, 420px); }
   .stepGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cardGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .shopLayout { grid-template-columns: minmax(0, 1fr); gap: 20px; }

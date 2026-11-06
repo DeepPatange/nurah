@@ -1,6 +1,7 @@
 /* nūrah category pages (Ihram, Women, Accessories, Kits & gifts). Builds on assets/site.css. */
 .pHead { padding-bottom: 28px; }
-.catMini { padding-bottom: 40px; }
+.catMini { padding-bottom: clamp(48px, 6vw, 80px); }
+.catMini .miniHead { font-size: clamp(24px, 2.4vw, 32px); margin-bottom: 20px; }
 .catMini .card.boxed { gap: 8px; }
 .catMini .card h3 { font-size: 18px; }
 .catMini .card .price { color: var(--ink); margin-top: 2px; }
@@ -17,11 +18,11 @@
 .noResults[hidden] { display: none; }
 
 /* image + text split on these pages uses portrait product and stock photos */
-.split > .img.portrait { aspect-ratio: 4 / 5; width: 100%; max-width: 520px; justify-self: center; background: var(--soft); border: 0; }
-.split > .img.portrait img { mix-blend-mode: multiply; }
+.split > .img.portrait { aspect-ratio: 2 / 3; width: 100%; max-width: 460px; justify-self: center; background: var(--soft); border: 0; }
+.split > .img.portrait img { mix-blend-mode: multiply; object-fit: contain; }
 .split .note { font-size: 13px; color: var(--muted); }
 .sizeTable { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--soft); border: 0; }
-.split > .img.portrait img { mix-blend-mode: multiply; }
+.split > .img.portrait img { mix-blend-mode: multiply; object-fit: contain; }
 .sizeTable th, .sizeTable td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .sizeTable thead th { font-weight: 500; background: #FAFAFA; }
 .sizeTable tbody th { font-weight: 500; }

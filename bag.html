@@ -73,12 +73,26 @@
   .item .price { grid-column: 2; }
   .empty { padding: 28px 20px; }
 }
+/* discount code and free-delivery progress */
+.coupon { display: flex; gap: 8px; margin: 4px 0 2px; }
+.coupon input { flex: 1; min-width: 0; height: 40px; border: 1px solid var(--line); border-radius: 4px; padding: 0 12px; background: #fff; font-family: var(--mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+.coupon .btn { height: 40px; width: auto; flex: none; }
+.couponMsg { font-size: 12px; }
+.couponMsg.ok { color: var(--ok); }
+.couponMsg.err { color: #8A3B12; }
+.couponMsg button { border: 0; background: none; padding: 0; margin-left: 8px; font-size: 12px; color: var(--muted); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.offerTip { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; background: var(--soft); padding: 8px 8px 8px 12px; border-radius: 4px; }
+.offerTip button { border: 1px dashed var(--ink); background: #fff; border-radius: 4px; height: 28px; padding: 0 10px; font-family: var(--mono); font-size: 11px; cursor: pointer; }
+.shipBar { height: 4px; border-radius: 2px; background: #E2E2E2; overflow: hidden; margin-top: 6px; }
+.shipBar i { display: block; height: 100%; background: var(--ink); transition: width .3s ease; }
+.shipBar.done i { background: var(--ok); }
+#discLine span:last-child { color: var(--ok); }
 </style>
 <link rel="stylesheet" href="assets/nav.css">
 </head>
 <body>
 
-<div class="announce"><span class="long">Free UAE delivery on orders over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">Free UAE delivery over AED 200  ·  Next-day before 2pm</span></div>
+<div class="announce"><span class="long">10% off your first order with code WELCOME10  ·  Free UAE delivery over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">10% off your first order: WELCOME10  ·  Free delivery over AED 200</span></div>
 <header class="site">
   <div class="wrap">
     <a class="wm" href="index.html" aria-label="nūrah home">n<span class="u">u</span>rah</a>
@@ -108,8 +122,13 @@
     <aside class="summary" aria-label="Order summary">
       <h2>Order summary</h2>
       <div class="line"><span>Subtotal</span><span id="sub">AED 0</span></div>
+      <div class="line" id="discLine" hidden><span id="discName">Discount</span><span id="disc">−AED 0</span></div>
       <div class="line"><span>UAE delivery</span><span id="ship">Free</span></div>
       <p class="small" id="shipNote">Free over AED 200, otherwise AED 15 (placeholder rate).</p>
+      <div class="shipBar" id="shipBar" aria-hidden="true"><i style="width:0%"></i></div>
+      <div class="offerTip" id="offerTip"><span>First order? <b style="font-weight:500">10% off</b> with</span><button type="button" id="tipApply">WELCOME10</button></div>
+      <form class="coupon" id="couponForm" novalidate><input id="couponCode" autocomplete="off" placeholder="Discount code" aria-label="Discount code"><button class="btn sm alt" type="submit">Apply</button></form>
+      <p class="couponMsg" id="couponMsg" aria-live="polite"></p>
       <div class="line"><span>VAT (5%)</span><span>Included</span></div>
       <div class="line total"><span>Total</span><span id="total">AED 0</span></div>
       <div class="check" id="check">
@@ -173,9 +192,15 @@
           '<div class="price">' + aed(it.price * it.qty) + '</div></div>';
       }).join("");
     }
-    var sub = items.reduce(function (s, it) { return s + it.price * it.qty; }, 0), ship = sub === 0 || sub >= FREE ? 0 : RATE;
-    $("sub").textContent = aed(sub); $("ship").textContent = ship ? aed(ship) : "Free"; $("total").textContent = aed(sub + ship);
-    $("shipNote").textContent = sub >= FREE ? "Your order qualifies for free UAE delivery." : "Free over AED 200, otherwise AED 15 (placeholder rate). Add " + aed(FREE - sub) + " for free delivery.";
+    var sub = items.reduce(function (s, it) { return s + it.price * it.qty; }, 0);
+    var code = N.coupon.get(), disc = code === N.offer.code ? Math.round(sub * N.offer.pct) / 100 : 0, net = sub - disc;
+    var ship = net === 0 || net >= FREE ? 0 : RATE;
+    $("sub").textContent = aed(sub); $("ship").textContent = ship ? aed(ship) : "Free"; $("total").textContent = aed(net + ship);
+    $("discLine").hidden = !disc; $("discName").textContent = "Discount (" + code + ")"; $("disc").textContent = "−" + aed(disc);
+    $("offerTip").hidden = !!code || !items.length;
+    $("couponMsg").className = "couponMsg" + (code ? " ok" : ""); $("couponMsg").innerHTML = code ? code + " applied: " + N.offer.pct + "% off your first order.<button type=\"button\" id=\"couponRemove\">Remove</button>" : "";
+    $("shipNote").textContent = net >= FREE ? "Your order qualifies for free UAE delivery." : "Add " + aed(FREE - net) + " for free UAE delivery (otherwise AED 15, placeholder rate).";
+    $("shipBar").className = "shipBar" + (net >= FREE ? " done" : ""); $("shipBar").firstElementChild.style.width = Math.min(100, Math.round(net / FREE * 100)) + "%";
     $("checkout").disabled = !items.length;
     trip();
   }
@@ -187,6 +212,17 @@
     N.bag.write(items); draw();
   });
   $("checkout").addEventListener("click", function () { N.toast("Checkout is not part of this prototype.", false); });
+
+  // discount code (placeholder offer: WELCOME10, 10% off a first order)
+  function applyCode(c) {
+    c = (c || "").trim().toUpperCase(); var msg = $("couponMsg");
+    if (!c) return;
+    if (c !== N.offer.code) { msg.className = "couponMsg err"; msg.textContent = "That code is not recognised. Check the spelling and try again."; return; }
+    N.coupon.set(c); $("couponCode").value = ""; draw();
+  }
+  $("couponForm").addEventListener("submit", function (e) { e.preventDefault(); applyCode($("couponCode").value); });
+  $("tipApply").addEventListener("click", function () { applyCode(N.offer.code); });
+  $("couponMsg").addEventListener("click", function (e) { if (e.target.id === "couponRemove") { N.coupon.set(""); draw(); } });
 
   // gift option
   $("gift").addEventListener("change", function () { $("giftMore").hidden = !this.checked; if (this.checked) $("giftNote").focus(); });

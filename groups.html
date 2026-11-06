@@ -20,7 +20,8 @@
 .gHero h1 { font-size: clamp(40px, 4.4vw, 64px); }
 .trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; background: #fff; }
 .trio img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; background: var(--soft); }
-.split > .img.trio { aspect-ratio: 5 / 4; }
+.split > .img.trio { aspect-ratio: auto; align-self: center; }
+.trio img { height: auto; aspect-ratio: 2 / 3; }
 .quote { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
 .quote .intro { display: grid; gap: 16px; align-content: start; }
 .quote form { display: grid; gap: 20px; }
@@ -33,7 +34,7 @@
 </head>
 <body>
 
-<div class="announce"><span class="long">Free UAE delivery on orders over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">Free UAE delivery over AED 200  ·  Next-day before 2pm</span></div>
+<div class="announce"><span class="long">10% off your first order with code WELCOME10  ·  Free UAE delivery over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">10% off your first order: WELCOME10  ·  Free delivery over AED 200</span></div>
 <header class="site">
   <div class="wrap">
     <a class="wm" href="index.html" aria-label="nūrah home">n<span class="u">u</span>rah</a>

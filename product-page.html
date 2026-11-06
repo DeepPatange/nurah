@@ -20,6 +20,7 @@
   color-scheme: light;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--display); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 img { max-width: 100%; display: block; }
@@ -51,8 +52,9 @@ header.site.show-atc .mini-atc { display: flex; }
 header.site.show-atc nav.main { display: none; }
 
 /* above the fold */
-.pdp { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 48px; padding-block: 18px 24px; min-height: min(calc(100vh - var(--header) - var(--bar)), 940px); }
-.gallery { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 12px; min-height: 0; }
+.pdp { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 48px; padding-block: 18px 48px; align-items: start; }
+/* gallery stays in view and fits one screen while the details scroll beside it; at the end of the details both move on together */
+.gallery { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 12px; min-height: 0; position: sticky; top: calc(var(--header) + 18px); height: calc(100vh - var(--header) - var(--bar) - 36px); height: calc(100svh - var(--header) - var(--bar) - 36px); min-height: 420px; }
 .thumbs { display: grid; grid-auto-rows: 92px; gap: 10px; align-content: start; }
 .thumb { border: 1px solid var(--line); background: var(--soft); padding: 0; cursor: pointer; overflow: hidden; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; }
@@ -95,7 +97,48 @@ h1 { font-weight: 400; font-size: clamp(30px, 3vw, 42px); letter-spacing: -.035e
 .lengths { display: flex; gap: 8px; flex-wrap: wrap; }
 .len { border: 1px solid var(--line); background: #fff; padding: 9px 14px; border-radius: 100px; cursor: pointer; font-size: 13px; }
 .len[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
-.ctaRow { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 10px; }
+.ctaRow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+/* conversion: rating, first-order offer, multi-set saving, free-delivery nudge */
+.rating { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13px; color: var(--ink); text-decoration: none; }
+.rating span { color: var(--muted); text-decoration: underline; text-underline-offset: 4px; }
+.stars { --r: 4.8; display: inline-block; letter-spacing: 2px; font-size: 14px; line-height: 1; background: linear-gradient(90deg, var(--ink) calc(var(--r) / 5 * 100%), #D2D2D2 0); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sample { font-style: normal; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 100px; padding: 1px 7px; }
+.offer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 10px 10px 14px; background: var(--soft); border-radius: 4px; font-size: 13px; }
+.offer b { font-weight: 500; }
+.code { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border: 1px dashed var(--ink); border-radius: 4px; background: #fff; font-family: var(--mono); font-size: 12px; letter-spacing: .04em; cursor: pointer; white-space: nowrap; }
+.code i { font-style: normal; font-family: var(--display); letter-spacing: 0; text-decoration: underline; text-underline-offset: 3px; }
+.code.applied { border-style: solid; }
+.code.applied i::before { content: "Applied"; } .code.applied i { font-size: 0; } .code.applied i::before { font-size: 12px; }
+.sets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.set { position: relative; display: grid; gap: 2px; align-content: start; text-align: left; border: 1px solid var(--line); background: #fff; padding: 12px 12px 10px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.set b { font-weight: 500; font-size: 14px; }
+.set .now { font-variant-numeric: tabular-nums; }
+.set s { color: var(--muted); font-size: 12px; }
+.set small { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.set em { position: absolute; right: 8px; top: -9px; font-style: normal; font-size: 11px; background: var(--ink); color: #fff; padding: 1px 8px; border-radius: 100px; }
+.set[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.freeShip { font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.freeShip.ok { color: var(--ok); }
+.freeShip .bar { flex: 1; max-width: 140px; height: 4px; border-radius: 2px; background: #E2E2E2; overflow: hidden; }
+.freeShip .bar i { display: block; height: 100%; background: var(--ink); }
+/* reviews */
+.revWrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
+.revSum { display: grid; gap: 16px; }
+.revSum .score { display: flex; align-items: baseline; gap: 12px; }
+.revSum .score b { font-size: 56px; font-weight: 400; letter-spacing: -.04em; line-height: 1; }
+.revSum .stars { font-size: 18px; }
+.revBars { display: grid; gap: 6px; font-size: 12px; color: var(--muted); }
+.revBars div { display: grid; grid-template-columns: 28px minmax(0, 1fr) 36px; gap: 10px; align-items: center; font-variant-numeric: tabular-nums; }
+.revBars i { height: 6px; border-radius: 3px; background: #E2E2E2; overflow: hidden; display: block; }
+.revBars i span { display: block; height: 100%; background: var(--ink); }
+.revList { display: grid; gap: 0; }
+.rev { display: grid; gap: 8px; padding: 20px 0; border-top: 1px solid var(--line); }
+.rev:last-child { border-bottom: 1px solid var(--line); }
+.rev .top { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.rev .top b { font-weight: 500; }
+.rev p { color: var(--ink); font-size: 15px; max-width: 64ch; }
+.rev .who { font-size: 13px; color: var(--muted); }
+.sampleNote { font-size: 12px; color: var(--muted); margin-top: 12px; }
 .qty { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--line); border-radius: 100px; padding: 0 6px; }
 .qty button { width: 32px; height: 32px; border: 0; background: none; cursor: pointer; font-size: 18px; }
 .btn { height: 48px; border-radius: 100px; border: 1px solid var(--ink); background: var(--ink); color: #fff; font-weight: 500; cursor: pointer; font-size: 15px; }
@@ -143,7 +186,7 @@ tr:last-child th, tr:last-child td { border-bottom: 0; }
 /* licensed stock photography (ReadyMadeContent) */
 .stock { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .stock figure { margin: 0; display: grid; gap: 12px; }
-.stock .img { aspect-ratio: 4 / 5; background: #EDEDED; position: relative; overflow: hidden; }
+.stock .img { aspect-ratio: 2 / 3; background: #EDEDED; position: relative; overflow: hidden; }
 .stock .img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
 .stock .img.missing img { display: none; }
 .stock .img.missing::after, .thumb.missing::after { content: attr(data-missing); position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 16px; font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
@@ -164,7 +207,7 @@ tr:last-child th, tr:last-child td { border-bottom: 0; }
 .canvasBox { position: relative; height: 82%; }
 .canvasBox canvas, .canvasBox > img { width: 100%; height: 100%; display: block; object-fit: cover; }
 .photoBox { background: var(--soft); }
-.card .ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; }
+.card .ph img { width: 100%; height: 100%; object-fit: contain; }
 .card .ph { overflow: hidden; }
 .canvasBox .note { position: absolute; left: 0; bottom: -26px; max-width: calc(100% - 128px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .canvasBox .replay { position: absolute; right: 0; bottom: -30px; border: 0; background: none; padding: 4px 0; font-size: 12px; color: var(--muted); cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
@@ -180,7 +223,8 @@ tr:last-child th, tr:last-child td { border-bottom: 0; }
 .box p { margin: 0; color: var(--muted); font-size: 14px; }
 .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .card { display: grid; gap: 10px; align-content: start; }
-.card .ph { aspect-ratio: 4 / 3; background: var(--soft); border: 0; display: grid; place-items: center; }
+.card .ph { position: relative; aspect-ratio: 1 / 1; background: var(--soft); border: 0; display: grid; place-items: center; }
+.card .ph img { position: absolute; inset: 0; }
 .card .ph img { mix-blend-mode: multiply; }
 .card .ph svg { width: 34%; height: auto; }
 .card .meta { display: flex; justify-content: space-between; gap: 12px; }
@@ -195,7 +239,6 @@ summary::-webkit-details-marker { display: none; }
 summary::after { content: "+"; font-size: 20px; line-height: 1; }
 details[open] summary::after { content: "−"; }
 details p { color: var(--muted); margin: 10px 0 0; max-width: 62ch; }
-.reviews { border: 1px dashed #CFCFCF; border-radius: 4px; padding: 22px; color: var(--muted); }
 footer { border-top: 1px solid var(--line); padding-block: 48px 96px; }
 footer .cols { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 32px; font-size: 14px; }
 footer .cols div { display: grid; gap: 8px; align-content: start; }
@@ -226,7 +269,7 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
   nav.main { display: none; }
   .pdp { grid-template-columns: minmax(0, 1fr); min-height: 0; gap: 20px; padding-top: 0; }
   .wrap.pdp { padding-left: 0; padding-right: 0; }
-  .gallery { grid-template-columns: minmax(0, 1fr); }
+  .gallery { grid-template-columns: minmax(0, 1fr); position: static; height: auto; min-height: 0; }
   .thumbs { display: none; }
   .stage { aspect-ratio: 4 / 5; height: auto; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .stage::-webkit-scrollbar { display: none; }
@@ -239,10 +282,12 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
   .paintSticky { position: relative; top: 0; height: auto; grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 56px; }
   .canvasBox { height: auto; aspect-ratio: 4 / 5; max-height: 76vh; }
   .paintSticky .canvasBox { aspect-ratio: 5 / 4; }
+  .paintSticky .canvasBox.photoBox { aspect-ratio: 2 / 3; }
   .reveal2, .contents { grid-template-columns: minmax(0, 1fr); gap: 48px; }
   .stock { grid-template-columns: repeat(3, 80%); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .stock figure { scroll-snap-align: start; }
-  .feel, .box, .cards, .faq { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .feel, .box, .cards, .faq, .revWrap { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .sets { gap: 6px; } .set { padding: 12px 8px 8px; } .set small { display: none; }
   .box { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   footer .cols { grid-template-columns: 1fr 1fr; }
 }
@@ -262,7 +307,7 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
 </head>
 <body>
 
-<div class="announce"><span class="long">Free UAE delivery on orders over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">Free UAE delivery over AED 200  ·  Next-day before 2pm</span></div>
+<div class="announce"><span class="long">10% off your first order with code WELCOME10  ·  Free UAE delivery over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">10% off your first order: WELCOME10  ·  Free delivery over AED 200</span></div>
 
 <header class="site" id="siteHeader">
   <div class="wrap">
@@ -303,9 +348,11 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
       <div>
         <h1 id="pName">Air Ihram</h1>
         <p class="sub" id="pSub">Lightweight two-piece ihram for warm climates and long walks.</p>
+        <a class="rating" href="#reviews" aria-label="Rated 4.8 out of 5, 126 reviews (sample)"><i class="stars" aria-hidden="true">★★★★★</i>4.8 <span>126 reviews</span><em class="sample">Sample</em></a>
       </div>
       <div class="priceRow"><span class="price" id="pPrice">AED 139</span><span class="vat">VAT included</span></div>
       <div class="bnpl">Or 4 interest-free payments of <b id="pBnpl">AED 34.75</b> with Tabby or Tamara</div>
+      <div class="offer"><span><b>10% off your first order</b> · applied in your bag</span><button class="code" type="button" data-apply-code aria-pressed="false">WELCOME10 <i>Apply</i></button></div>
       <span class="reviewed"><i></i>Includes the printed preparation guide, reviewed by a qualified scholar</span>
 
       <div>
@@ -326,11 +373,20 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
         </div>
       </div>
 
+      <div>
+        <div class="optHead"><span class="label">Sets</span><span class="label">Buy more, save more</span></div>
+        <div class="sets" id="sets" style="margin-top:12px">
+          <button class="set" type="button" data-n="1" aria-pressed="true"><b>1 set</b><span class="now" data-now="1">AED 139</span><small>One izar and rida</small></button>
+          <button class="set" type="button" data-n="2" aria-pressed="false"><em>Save 10%</em><b>2 sets</b><span class="now" data-now="2">AED 250</span><s data-was="2">AED 278</s><small>A spare for washing</small></button>
+          <button class="set" type="button" data-n="3" aria-pressed="false"><em>Save 15%</em><b>3 sets</b><span class="now" data-now="3">AED 354</span><s data-was="3">AED 417</s><small>Best value</small></button>
+        </div>
+      </div>
+
       <div class="ctaRow">
-        <div class="qty"><button aria-label="Decrease quantity" data-q="-1">−</button><span id="qty">1</span><button aria-label="Increase quantity" data-q="1">+</button></div>
         <button class="btn" id="mainAtc" data-add>Add to bag · <span id="atcPrice">AED 139</span></button>
       </div>
       <div class="express"><button class="btn alt" data-add>Buy with Apple Pay</button><button class="btn alt" data-add>Add to a kit</button></div>
+      <p class="freeShip" id="freeShip" aria-live="polite"></p>
 
       <label class="bundle"><input type="checkbox" id="bundle"><div><b>Add the Essentials Pack</b> (ihram belt, fragrance-free care set, shoe bag) <b>+AED 119</b> <span class="save">· save AED 23</span></div></label>
 
@@ -449,12 +505,34 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
     </div>
   </section>
 
-  <!-- FAQ + REVIEWS -->
+  <!-- REVIEWS (sample content until verified reviews exist) -->
+  <section class="band" id="reviews">
+    <div class="wrap revWrap">
+      <div class="revSum">
+        <h2>Customer reviews</h2>
+        <div class="score"><b>4.8</b><div><i class="stars" aria-hidden="true">★★★★★</i><div style="font-size:13px;color:var(--muted);margin-top:4px">126 reviews</div></div></div>
+        <div class="revBars" aria-label="Rating breakdown">
+          <div><span>5 ★</span><i><span style="width:84%"></span></i><span>84%</span></div>
+          <div><span>4 ★</span><i><span style="width:12%"></span></i><span>12%</span></div>
+          <div><span>3 ★</span><i><span style="width:3%"></span></i><span>3%</span></div>
+          <div><span>2 ★</span><i><span style="width:1%"></span></i><span>1%</span></div>
+          <div><span>1 ★</span><i><span style="width:0%"></span></i><span>0%</span></div>
+        </div>
+        <p class="sampleNote">Sample ratings and reviews, shown for layout only. Reviews from verified purchases replace them at launch.</p>
+      </div>
+      <div class="revList">
+        <article class="rev"><div class="top"><i class="stars" style="--r:5" aria-label="5 out of 5">★★★★★</i><b>Light enough for a summer Umrah</b><em class="sample">Sample</em></div><p>Comfortable in the heat and easy to wear on long walks. Regular length was right for me at 176 cm.</p><span class="who">Ahmed K., Dubai · Air, Regular</span></article>
+        <article class="rev"><div class="top"><i class="stars" style="--r:5" aria-label="5 out of 5">★★★★★</i><b>Arrived the day after I ordered</b><em class="sample">Sample</em></div><p>Delivered the next day with the guide and checklist in the box, three days before my flight.</p><span class="who">Yusuf M., Sharjah · Air, Long</span></article>
+        <article class="rev"><div class="top"><i class="stars" style="--r:4" aria-label="4 out of 5">★★★★★</i><b>Took the two-set option</b><em class="sample">Sample</em></div><p>Both pieces are a generous size. I chose two sets so I had a spare while one was being washed.</p><span class="who">Omar S., Abu Dhabi · Air, Regular</span></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
   <section class="band alt" id="faq">
     <div class="wrap faq">
       <div style="display:grid;gap:16px;align-content:start">
         <h2>Product information</h2>
-        <div class="reviews">Customer reviews are displayed from verified purchases only and will appear after launch.</div>
       </div>
       <div>
         <details open><summary>Specifications</summary><p>Composition, dimensions and weight will be published from verified supplier samples. Lengths: Regular (up to 180 cm) and Long (180 cm and above).</p></details>
@@ -492,17 +570,25 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
     reserve: { name: "Reserve Ihram", short: "Reserve", sub: "Premium long-staple cotton with finished edges, presented in a gift box.", price: 219 }
   };
   var state = { fab: "air", len: "Regular", qty: 1, bundle: false, bag: 0 };
+  var SAVE = { 1: 0, 2: 0.10, 3: 0.15 }, FREE = 200;
+  function setPrice(price, n) { return Math.round(price * n * (1 - SAVE[n])); }
   var qf = new URLSearchParams(location.search).get("fabric"); if (FAB[qf]) state.fab = qf;
   var $ = function (id) { return document.getElementById(id); };
   var aed = function (n) { return "AED " + (Math.round(n * 100) / 100).toLocaleString("en-US", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); };
 
   function render() {
     var f = FAB[state.fab];
-    var unit = f.price + (state.bundle ? 119 : 0);
-    var total = unit * state.qty;
+    var sets = setPrice(f.price, state.qty);
+    var total = sets + (state.bundle ? 119 : 0);
     $("pName").textContent = f.name; $("crumbName").textContent = f.short; $("pSub").textContent = f.sub;
     $("pPrice").textContent = aed(f.price); $("pBnpl").textContent = aed(total / 4);
-    $("atcPrice").textContent = aed(total); $("qty").textContent = state.qty;
+    $("atcPrice").textContent = aed(total);
+    document.querySelectorAll(".set").forEach(function (b) { var n = +b.dataset.n; b.setAttribute("aria-pressed", n === state.qty ? "true" : "false"); });
+    [1, 2, 3].forEach(function (n) { var a = document.querySelector('[data-now="' + n + '"]'), w = document.querySelector('[data-was="' + n + '"]'); if (a) a.textContent = aed(setPrice(f.price, n)); if (w) w.textContent = aed(f.price * n); });
+    // free-delivery nudge: what is already in the bag plus this selection
+    var inBag = window.NURAH ? window.NURAH.bag.read().reduce(function (t, i) { return t + i.price * i.qty; }, 0) : 0, after = inBag + total, fs = $("freeShip");
+    if (after >= FREE) { fs.className = "freeShip ok"; fs.textContent = "This order qualifies for free UAE delivery"; }
+    else { fs.className = "freeShip"; fs.innerHTML = '<span>Add <b style="color:var(--ink);font-weight:500">' + aed(FREE - after) + '</b> for free UAE delivery</span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(after / FREE * 100) + '%"></i></span>'; }
     $("miniTitle").textContent = f.name + " · " + aed(total);
     $("sbName").textContent = f.name + " · " + state.len; $("sbPrice").textContent = aed(total);
     document.querySelectorAll(".fab").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.k === state.fab ? "true" : "false"); });
@@ -510,7 +596,7 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
   }
   document.querySelectorAll(".fab").forEach(function (b) { b.addEventListener("click", function () { state.fab = b.dataset.k; render(); }); });
   document.querySelectorAll(".len").forEach(function (b) { b.addEventListener("click", function () { state.len = b.dataset.len; render(); }); });
-  document.querySelectorAll("[data-q]").forEach(function (b) { b.addEventListener("click", function () { state.qty = Math.max(1, Math.min(10, state.qty + Number(b.dataset.q))); render(); }); });
+  document.querySelectorAll(".set").forEach(function (b) { b.addEventListener("click", function () { state.qty = +b.dataset.n; render(); }); });
   $("bundle").addEventListener("change", function (e) { state.bundle = e.target.checked; render(); });
   var toastT;
   document.querySelectorAll("[data-add]").forEach(function (b) { b.addEventListener("click", function () {
@@ -518,8 +604,11 @@ footer .fine { margin-top: 36px; font-size: 12px; color: var(--muted); }
     if (!N) { state.bag += 1; $("bagCount").textContent = state.bag; var t = $("toast"); t.textContent = "Added to bag"; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("show"); }, 1800); return; }
     if (b.dataset.acc) { var a = N.products[b.dataset.acc]; N.bag.add({ id: a.id, name: a.name, price: a.price, icon: a.icon }); return; }
     var f = FAB[state.fab];
-    N.bag.add({ id: "ihram-" + state.fab + "-" + state.len.toLowerCase(), name: f.name, variant: state.len === "Regular" ? "Regular · up to 180 cm" : "Long · 180 cm and above", price: f.price, img: N.products[state.fab].img }, state.qty);
+    var lenTxt = state.len === "Regular" ? "Regular · up to 180 cm" : "Long · 180 cm and above";
+    if (state.qty === 1) N.bag.add({ id: "ihram-" + state.fab + "-" + state.len.toLowerCase(), name: f.name, variant: lenTxt, price: f.price, img: N.products[state.fab].img });
+    else N.bag.add({ id: "ihram-" + state.fab + "-" + state.len.toLowerCase() + "-x" + state.qty, name: f.name + ", " + state.qty + " sets", variant: lenTxt + " · save " + Math.round(SAVE[state.qty] * 100) + "%", price: setPrice(f.price, state.qty), img: N.products[state.fab].img });
     if (state.bundle) N.bag.add({ id: "essentials-pack", name: "Essentials Pack", variant: "Ihram belt, fragrance-free care set, shoe bag", price: 119, icon: "care" });
+    render();
   }); });
 
   // gallery: thumbnails on desktop, swipe on mobile; the video plays only while it is the visible slide
