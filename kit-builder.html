@@ -15,7 +15,7 @@
 .kstep { border-top: 1px solid var(--line); padding: 28px 0; display: grid; gap: 16px; }
 .kstep:first-child { border-top: 0; padding-top: 4px; }
 .kstep h2 { font-size: 24px; letter-spacing: -.02em; display: flex; align-items: center; gap: 12px; }
-.kstep h2 .n { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--ink); display: grid; place-items: center; font-size: 13px; letter-spacing: 0; flex: none; }
+.kstep h2 .n { width: 32px; height: 32px; border-radius: 50%; color: var(--gold-deep); border: 1px solid var(--gold); display: grid; place-items: center; font-size: 13px; letter-spacing: 0; flex: none; }
 .help { color: var(--muted); font-size: 14px; max-width: 64ch; }
 .sublabel { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .block { display: grid; gap: 12px; }
@@ -54,7 +54,7 @@
 .ess { display: grid; border-top: 1px solid var(--line); }
 .erow { display: grid; grid-template-columns: 20px 64px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
 .erow input { width: 18px; height: 18px; accent-color: var(--ink); margin: 0; }
-.erow .ph { width: 64px; height: 64px; overflow: hidden; background: var(--soft); border: 0; }
+.erow .ph { width: 64px; height: 64px; overflow: hidden; background: #fff; border: 1px solid var(--line); }
 .erow .ph img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
 .erow b { font-weight: 500; font-size: 15px; display: block; }
 .erow small { color: var(--muted); font-size: 13px; }
@@ -82,7 +82,7 @@
 .check { border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; font-size: 14px; display: grid; gap: 4px; }
 .check b { font-weight: 500; }
 .check.ok b { color: var(--ok); }
-.check.warn { border-color: #E5C3AE; background: #FFF8F3; }
+.check.warn { border-color: #E5C3AE; background: #fff; }
 .check.warn b { color: #9A4A22; }
 .sum .btn { width: 100%; }
 .added { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 14px; color: var(--ok); }
@@ -92,7 +92,7 @@
 .mobBar { display: none; }
 
 /* what's in the box */
-.boxSplit > .img { aspect-ratio: 4 / 5; max-height: 620px; background: var(--soft); border: 0; }
+.boxSplit > .img { aspect-ratio: 4 / 5; max-height: 620px; background: #fff; border: 1px solid var(--line); }
 .boxSplit > .img img { mix-blend-mode: multiply; }
 .boxSplit > .img img { object-fit: contain; }
 
@@ -122,7 +122,7 @@
 </head>
 <body>
 
-<div class="announce"><span class="long">10% off your first order with code WELCOME10  ·  Free UAE delivery over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">10% off your first order: WELCOME10  ·  Free delivery over AED 200</span></div>
+<div class="announce"><span class="long">10% off your first order with code <b>WELCOME10</b>  ·  Free UAE delivery over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">10% off your first order: <b>WELCOME10</b>  ·  Free delivery over AED 200</span></div>
 <header class="site">
   <div class="wrap">
     <a class="wm" href="index.html" aria-label="nūrah home">n<span class="u">u</span>rah</a>

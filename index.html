@@ -35,7 +35,7 @@
 .hero2 .ctas { margin-top: 8px; }
 .usp { list-style: none; margin: 12px 0 0; padding: 20px 0 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; font-size: 14px; }
 .usp li { display: flex; gap: 10px; align-items: center; }
-.usp svg { width: 20px; height: 20px; flex: none; fill: none; stroke: var(--ink); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.usp svg { width: 20px; height: 20px; flex: none; fill: none; stroke: var(--gold); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
 /* hero image: kept at its own shape (no cropping); on short screens it shrinks so the trip bar stays in view */
 .heroImg { position: relative; margin: 0; justify-self: end; width: min(100%, calc((100vh - var(--header) - var(--bar) - 3 * var(--pad) - var(--rangeH)) * 1.34)); aspect-ratio: 1452 / 1083; overflow: hidden; background: var(--soft); }
 .heroImg img { width: 100%; height: 100%; object-fit: cover; }
@@ -43,8 +43,9 @@
 /* the range: one row of four links with starting prices */
 .rangeRow { padding-block: 0; }
 .rangeGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.rTile { display: grid; grid-template-columns: var(--rangeH) minmax(0, 1fr); gap: clamp(12px, 1.6vw, 24px); align-items: center; height: var(--rangeH); padding: 0 20px 0 0; background: var(--soft); color: var(--ink); text-decoration: none; border: 1px solid transparent; transition: border-color .15s ease; }
-.rTile:hover { border-color: var(--ink); }
+.rTile { display: grid; grid-template-columns: var(--rangeH) minmax(0, 1fr); gap: clamp(12px, 1.6vw, 24px); align-items: center; height: var(--rangeH); padding: 0 20px 0 0; background: #fff; color: var(--ink); text-decoration: none; border: 1px solid var(--line); transition: border-color .15s ease; }
+.rTile:hover { border-color: var(--gold); }
+.rCap::after { color: var(--gold-deep); }
 .rImg { display: block; height: 100%; aspect-ratio: 1 / 1; overflow: hidden; }
 .rImg img { padding: 10px; }
 .rImg img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
@@ -55,7 +56,7 @@
 .rCap::after { content: "\2192"; position: absolute; right: 0; top: 50%; transform: translateY(-50%); font-size: 16px; transition: transform .2s ease; }
 .rTile:hover .rCap::after { transform: translate(3px, -50%); }
 
-.split.contents > .img { background: var(--soft); border: 0; }
+.split.contents > .img { background: #fff; border: 1px solid var(--line); }
 .split.contents > .img { max-height: 600px; }
 .split.contents > .img img { mix-blend-mode: multiply; object-fit: contain; }
 
@@ -65,15 +66,15 @@
 .swatch img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
 .swatch figcaption { position: absolute; left: 12px; right: 12px; bottom: 12px; font-size: 12px; color: var(--ink); background: rgba(255,255,255,.9); padding: 6px 10px; }
 .fab { position: relative; display: grid; gap: 14px; align-content: start; background: #fff; border: 1px solid var(--line); padding: 20px; color: var(--ink); text-decoration: none; transition: border-color .15s ease; }
-.fab:hover { border-color: var(--ink); }
+.fab:hover { border-color: var(--gold); }
 .fab .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-variant-numeric: tabular-nums; }
 .fab .top b { font-size: 16px; font-weight: 500; }
 .fab .top span { font-size: 14px; }
 .fab .weave { font-size: 14px; color: var(--muted); margin-top: -8px; }
 .fab .sc { display: grid; gap: 6px; font-size: 12px; color: var(--muted); }
 .fab .track { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
-.fab .track i { height: 6px; border-radius: 3px; background: #E2E2E2; }
-.fab .track i.on { background: var(--ink); }
+.fab .track i { height: 6px; border-radius: 3px; background: #EFE6D2; }
+.fab .track i.on { background: var(--gold); }
 .fab .best { font-size: 13px; padding-top: 12px; border-top: 1px solid var(--line); }
 .fab .go { font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
 .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -136,7 +137,7 @@
 </head>
 <body>
 
-<div class="announce"><span class="long">10% off your first order with code WELCOME10  ·  Free UAE delivery over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">10% off your first order: WELCOME10  ·  Free delivery over AED 200</span></div>
+<div class="announce"><span class="long">10% off your first order with code <b>WELCOME10</b>  ·  Free UAE delivery over AED 200  ·  Order before 2pm for next-day delivery</span><span class="short">10% off your first order: <b>WELCOME10</b>  ·  Free delivery over AED 200</span></div>
 <header class="site">
   <div class="wrap">
     <a class="wm" href="index.html" aria-label="nūrah home">n<span class="u">u</span>rah</a>
@@ -151,7 +152,7 @@
   <section class="hero2" aria-label="Introduction">
     <div class="wrap heroGrid">
       <div class="copy">
-        <h1>Ihram and essentials for Umrah and Hajj</h1>
+        <h1>Ihram and essentials for <span class="goldWord">Umrah and Hajj</span></h1>
         <p class="lead">Four ihram fabrics, women's essentials and ready-made kits, delivered across the UAE before you travel.</p>
         <div class="ctas"><a class="btn" href="ihram.html">Shop ihram</a><a class="btn alt" href="kit-builder.html">Build your kit</a></div>
         <ul class="usp">
